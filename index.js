@@ -1,4 +1,4 @@
 'use strict';
 
-exports.Glyph = require('./lib/glyph').Glyph;
-exports.GlyphFeatures = require('./lib/glyph-features').GlyphFeatures;
+module.exports.Glyph = require('./lib/glyph');
+module.exports.GlyphFeatures = require('./lib/glyph-features');
