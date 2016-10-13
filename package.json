@@ -4,7 +4,7 @@
   "description": "handwriting utilities for glyphs, feature extraction, comparison and recognition",
   "main": "index.js",
   "scripts": {
-    "test": "node test"
+    "test": "jasmine-node lib"
   },
   "repository": {
     "type": "git",
