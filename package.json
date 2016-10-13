@@ -1,0 +1,22 @@
+{
+  "name": "handlib",
+  "version": "1.0.0",
+  "description": "handwriting utilities for glyphs, feature extraction, comparison and recognition",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@192.168.0.136:/opt/git/handlib"
+  },
+  "keywords": [
+    "handwriting",
+    "glyph",
+    "feature",
+    "comparison",
+    "recognition"
+  ],
+  "author": "Martin Tasker",
+  "license": "MIT"
+}
