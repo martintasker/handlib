@@ -17,6 +17,7 @@ var GlyphFeatures = function(glyph) {
 
   self.bbox = getBoundingBox(self.glyph);
   self.subStrokes = getGlyphSubStrokes(self.glyph);
+  self.size = getSubStrokeSizes(self.subStrokes);
 
   function getBoundingBox(glyph) {
     return glyph.bbox;
@@ -35,7 +36,9 @@ var GlyphFeatures = function(glyph) {
 
   function getStrokeSubStrokes(stroke) {
     if (stroke.length <= 2) {
-      return [stroke];
+      return [{
+        points: stroke
+      }];
     }
 
     var increments = [];
@@ -69,7 +72,9 @@ var GlyphFeatures = function(glyph) {
       for (var i = startIndex; i <= endIndex; i++) {
         subStroke.push(stroke[i]);
       }
-      subStrokes.push(subStroke);
+      subStrokes.push({
+        points: subStroke
+      });
     }
 
     var startIndex = 0;
@@ -82,6 +87,33 @@ var GlyphFeatures = function(glyph) {
     }
 
     return subStrokes;
+  }
+
+  function getSubStrokeSizes(subStrokes) {
+    var size = subStrokes.reduce(function(previousSize, subStroke) {
+      return subStrokeSize(subStroke) + previousSize;
+    }, 0);
+    return size;
+  }
+
+  function subStrokeSize(subStroke) {
+    var s = 0;
+    var i = 0;
+    for (i = 0; i < subStroke.points.length - 1; i++) {
+      var x0 = subStroke.points[i].x;
+      var y0 = subStroke.points[i].y;
+      var x1 = subStroke.points[i + 1].x;
+      var y1 = subStroke.points[i + 1].y;
+      var dx = x1 - x0;
+      var dy = y1 - y0;
+      var ds = Math.sqrt(dx * dx + dy * dy);
+      subStroke.points[i].s = s;
+      subStroke.points[i].ds = ds;
+      s += ds;
+    }
+    subStroke.points[i].s = s;
+    subStroke.size = s;
+    return subStroke.size;
   }
 };
 
