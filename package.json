@@ -1,11 +1,11 @@
 {
   "name": "handlib",
-  "version": "1.0.0",
+  "version": "0.1.1",
   "description": "handwriting utilities for glyphs, feature extraction, comparison and recognition",
   "main": "index.js",
   "scripts": {
     "test": "jasmine-node lib",
-    "build": "browserify index.js --standalone handlib -o bundle.js"
+    "build": "browserify index.js --standalone handlib -o handlib.js"
   },
   "repository": {
     "type": "git",
