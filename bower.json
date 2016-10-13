@@ -1,0 +1,25 @@
+{
+  "name": "handlib",
+  "description": "handwriting utilities for glyphs, feature extraction, comparison and recognition",
+  "main": "index.js",
+  "authors": [
+    "Martin Tasker"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "handwriting",
+    "glyph",
+    "feature",
+    "comparison",
+    "recognition"
+  ],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "**/*.spec.*",
+    "**/*.mock.*"
+  ]
+}
