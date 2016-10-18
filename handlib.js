@@ -3,9 +3,48 @@
 
 module.exports.Glyph = require('./lib/glyph');
 module.exports.GlyphBuilder = require('./lib/glyph-builder');
-module.exports.GlyphFeatures = require('./lib/glyph-features');
+module.exports.FXGlyph = require('./lib/fx-glyph');
 
-},{"./lib/glyph":4,"./lib/glyph-builder":2,"./lib/glyph-features":3}],2:[function(require,module,exports){
+},{"./lib/fx-glyph":2,"./lib/glyph":5,"./lib/glyph-builder":3}],2:[function(require,module,exports){
+'use strict';
+
+var Glyph = require('./glyph');
+var GlyphFeatures = require('./glyph-features');
+
+var FXGlyph = function(glyph) {
+
+  // public API and instance variables
+  var self = this;
+  self.glyph = glyph;
+};
+
+FXGlyph.prototype = {
+  get id() {
+    return this.glyph.id;
+  },
+  get bbox() {
+    return this.glyph.bbox;
+  },
+  get strokes() {
+    return this.glyph.strokes;
+  },
+  get subStrokes() {
+    if (!this._features) {
+      this._features = new GlyphFeatures(this.glyph);
+    }
+    return this._features.subStrokes;
+  },
+  get size() {
+    if (!this._features) {
+      this._features = new GlyphFeatures(this.glyph);
+    }
+    return this._features.size;
+  },
+}
+
+module.exports = FXGlyph;
+
+},{"./glyph":5,"./glyph-features":4}],3:[function(require,module,exports){
 'use strict';
 
 var Glyph = require('./glyph');
@@ -78,7 +117,7 @@ GlyphBuilder.prototype.getGlyph = function() {
 
 module.exports = GlyphBuilder;
 
-},{"./glyph":4}],3:[function(require,module,exports){
+},{"./glyph":5}],4:[function(require,module,exports){
 'use strict';
 
 var Glyph = require('./glyph');
@@ -144,7 +183,10 @@ var GlyphFeatures = function(glyph) {
     function addSubStroke(startIndex, endIndex) {
       var subStroke = [];
       for (var i = startIndex; i <= endIndex; i++) {
-        subStroke.push(stroke[i]);
+        subStroke.push({
+          x: stroke[i].x,
+          y: stroke[i].y
+        });
       }
       subStrokes.push({
         points: subStroke
@@ -193,7 +235,7 @@ var GlyphFeatures = function(glyph) {
 
 module.exports = GlyphFeatures;
 
-},{"./glyph":4}],4:[function(require,module,exports){
+},{"./glyph":5}],5:[function(require,module,exports){
 'use strict';
 
 var Glyph = function() {
@@ -202,8 +244,6 @@ var Glyph = function() {
   var self = this;
   self.strokes = [];
   self.bbox = undefined;
-
-  self.strokeInProgress = false;
 };
 
 // implementation -- methods
