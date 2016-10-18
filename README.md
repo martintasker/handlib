@@ -9,6 +9,7 @@ Delivers classes useful for handwriting:
 Todo:
 
 * change `GlyphFeatures` API to `FXGlyph` using JavaScript getters and memoization
+* add `id` property to glyph
 * convenience constructor on `Glyph`
 * move scaling unit tests from `glyph-builder.spec.js` to `glyph.spec.js` (requires above change)
 * ever-better and richer feature extraction
@@ -37,3 +38,6 @@ From a client project,
 ```shell
 bower install --save git@192.168.0.136:/opt/git/handlib#v1.2.3
 ```
+
+or, to update, change the version specified in `bower.json` to specify `v1.2.3`, or `^1.2.3`, or such,
+and `bower update handlib`.
