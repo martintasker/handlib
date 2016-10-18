@@ -4,11 +4,11 @@ Delivers classes useful for handwriting:
 
 | `Glyph` | describes a single glyph |
 | `GlyphBuilder` | builds a glyph |
-| `GlyphFeatures` | extracts the features from a `Glyph` |
+| `FXGlyph` | feature-extracted `Glyph`, with lazy getters |
 
 Todo:
 
-* change `GlyphFeatures` API to `FXGlyph` using JavaScript getters and memoization
+* sanitize coding and unit testing of `GlyphFeatures`
 * add `id` property to glyph
 * convenience constructor on `Glyph`
 * move scaling unit tests from `glyph-builder.spec.js` to `glyph.spec.js` (requires above change)
