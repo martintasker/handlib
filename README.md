@@ -1,9 +1,18 @@
 # handlib - handwriting library
 
-Delivers classes useful ofr handwriting:
+Delivers classes useful for handwriting:
 
 | `Glyph` | describes a single glyph |
+| `GlyphBuilder` | builds a glyph |
 | `GlyphFeatures` | extracts the features from a `Glyph` |
+
+Todo:
+
+* change `GlyphFeatures` API to `FXGlyph` using JavaScript getters and memoization
+* convenience constructor on `Glyph`
+* move scaling unit tests from `glyph-builder.spec.js` to `glyph.spec.js` (requires above change)
+* ever-better and richer feature extraction
+* better internal structure for feature extraction
 
 ## testing
 

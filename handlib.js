@@ -2,9 +2,83 @@
 'use strict';
 
 module.exports.Glyph = require('./lib/glyph');
+module.exports.GlyphBuilder = require('./lib/glyph-builder');
 module.exports.GlyphFeatures = require('./lib/glyph-features');
 
-},{"./lib/glyph":3,"./lib/glyph-features":2}],2:[function(require,module,exports){
+},{"./lib/glyph":4,"./lib/glyph-builder":2,"./lib/glyph-features":3}],2:[function(require,module,exports){
+'use strict';
+
+var Glyph = require('./glyph');
+
+var GlyphBuilder = function() {
+  Glyph.call(this);
+  this.strokeInProgress = false;
+};
+
+GlyphBuilder.prototype = Object.create(Glyph.prototype);
+GlyphBuilder.prototype.constructor = GlyphBuilder;
+
+// implementation -- methods
+GlyphBuilder.prototype.addPoint = function(xy) {
+  var self = this;
+  if (!self.strokeInProgress) {
+    self.strokes.push([]);
+    self.strokeInProgress = true;
+  }
+
+  var stroke = self.strokes[self.strokes.length - 1];
+  if (stroke.length > 0) {
+    var lastPoint = stroke[stroke.length - 1];
+    if (lastPoint.x === xy.x && lastPoint.y === xy.y) {
+      return;
+    }
+  }
+
+  stroke.push(xy);
+
+  if (!self.bbox) {
+    self.bbox = {
+      top: xy.y,
+      bottom: xy.y,
+      left: xy.x,
+      right: xy.x
+    };
+  } else {
+    if (xy.x < self.bbox.left) {
+      self.bbox.left = xy.x;
+    } else if (xy.x > self.bbox.right) {
+      self.bbox.right = xy.x;
+    }
+    if (xy.y < self.bbox.top) {
+      self.bbox.top = xy.y;
+    } else if (xy.y > self.bbox.bottom) {
+      self.bbox.bottom = xy.y;
+    }
+  }
+};
+
+GlyphBuilder.prototype.endStroke = function() {
+  var self = this;
+  if (!self.strokeInProgress) {
+    return;
+  }
+  var stroke = self.strokes[self.strokes.length - 1];
+  if (stroke.length === 0) {
+    self.strokes.pop();
+  }
+  self.strokeInProgress = false;
+};
+
+GlyphBuilder.prototype.getGlyph = function() {
+  var that = new Glyph();
+  that.strokes = this.strokes;
+  that.bbox = this.bbox;
+  return that;
+};
+
+module.exports = GlyphBuilder;
+
+},{"./glyph":4}],3:[function(require,module,exports){
 'use strict';
 
 var Glyph = require('./glyph');
@@ -119,7 +193,7 @@ var GlyphFeatures = function(glyph) {
 
 module.exports = GlyphFeatures;
 
-},{"./glyph":3}],3:[function(require,module,exports){
+},{"./glyph":4}],4:[function(require,module,exports){
 'use strict';
 
 var Glyph = function() {
@@ -133,56 +207,6 @@ var Glyph = function() {
 };
 
 // implementation -- methods
-Glyph.prototype.addPoint = function(xy) {
-  var self = this;
-  if (!self.strokeInProgress) {
-    self.strokes.push([]);
-    self.strokeInProgress = true;
-  }
-
-  var stroke = self.strokes[self.strokes.length - 1];
-  if (stroke.length > 0) {
-    var lastPoint = stroke[stroke.length - 1];
-    if (lastPoint.x === xy.x && lastPoint.y === xy.y) {
-      return;
-    }
-  }
-
-  stroke.push(xy);
-
-  if (!self.bbox) {
-    self.bbox = {
-      top: xy.y,
-      bottom: xy.y,
-      left: xy.x,
-      right: xy.x
-    };
-  } else {
-    if (xy.x < self.bbox.left) {
-      self.bbox.left = xy.x;
-    } else if (xy.x > self.bbox.right) {
-      self.bbox.right = xy.x;
-    }
-    if (xy.y < self.bbox.top) {
-      self.bbox.top = xy.y;
-    } else if (xy.y > self.bbox.bottom) {
-      self.bbox.bottom = xy.y;
-    }
-  }
-};
-
-Glyph.prototype.endStroke = function() {
-  var self = this;
-  if (!self.strokeInProgress) {
-    return;
-  }
-  var stroke = self.strokes[self.strokes.length - 1];
-  if (stroke.length === 0) {
-    self.strokes.pop();
-  }
-  self.strokeInProgress = false;
-};
-
 Glyph.prototype.getScaled = function(scale) {
   var self = this;
 
@@ -190,22 +214,36 @@ Glyph.prototype.getScaled = function(scale) {
   if (self.bbox.right > self.bbox.left) {
     xScale = scale / (self.bbox.right - self.bbox.left);
   }
-  var x0 = - self.bbox.left * scale;
+  var x0 = -self.bbox.left * scale;
   var yScale = 0;
   if (self.bbox.bottom > self.bbox.top) {
     yScale = scale / (self.bbox.bottom - self.bbox.top);
   }
-  var y0 = - self.bbox.top * scale;
+  var y0 = -self.bbox.top * scale;
+
+  function cx(x) {
+    return x * xScale + x0;
+  }
+
+  function cy(y) {
+    return y * yScale + y0;
+  }
 
   var that = new Glyph();
-  self.strokes.forEach(function(stroke) {
-    stroke.forEach(function(xy) {
-      var x = xy.x * xScale + x0;
-      var y = xy.y * yScale + y0;
-      that.addPoint({x: x, y: y});
+  that.strokes = self.strokes.map(function(stroke) {
+    return stroke.map(function(xy) {
+      return {
+        x: cx(xy.x),
+        y: cy(xy.y)
+      };
     });
-    that.endStroke();
   });
+  that.bbox = {
+    left: cx(self.bbox.left),
+    right: cx(self.bbox.right),
+    top: cy(self.bbox.top),
+    bottom: cy(self.bbox.bottom),
+  };
   return that;
 };
 
