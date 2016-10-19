@@ -8,11 +8,9 @@ Delivers classes useful for handwriting:
 
 Todo:
 
-* unit-test `FXGlyph.getScaledStrokes`
+* add `device` to FXGlyph directly
+* add `device` parameter to start-stroke on `GlyphBuilder`
 * sanitize coding and unit testing of `GlyphFeatures`
-* add `id` property to glyph
-* convenience constructor on `Glyph`
-* move scaling unit tests from `glyph-builder.spec.js` to `glyph.spec.js` (requires above change)
 * ever-better and richer feature extraction
 * better internal structure for feature extraction
 
