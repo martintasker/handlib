@@ -8,9 +8,9 @@ Delivers classes useful for handwriting:
 
 Todo:
 
+* make a dot return zero substrokes
 * add `device` to FXGlyph directly
 * add `device` parameter to start-stroke on `GlyphBuilder`
-* sanitize coding and unit testing of `GlyphFeatures`
 * ever-better and richer feature extraction
 * better internal structure for feature extraction
 
