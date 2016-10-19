@@ -145,7 +145,7 @@ FXGlyph.getScaledStrokes = function(strokes, bbox, scale) {
 
 FXGlyph.prototype._getSubStrokes = function() {
   var allSubStrokes = [];
-  this.glyph.strokes.forEach(function(stroke) {
+  this.unitScaledStrokes.forEach(function(stroke) {
     var subStrokes = getStrokeSubStrokes(stroke);
     subStrokes.forEach(function(subStroke) {
       allSubStrokes.push(subStroke);

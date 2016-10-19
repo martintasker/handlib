@@ -45,6 +45,12 @@ and `bower update handlib`.
 
 ## releases
 
+### v0.4.1
+
+Compared with v0.4.0,
+
+* fixed substrokes so they really are properly unit-scaled
+
 ### v0.4.0
 
 Compared with v0.3.0,
