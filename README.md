@@ -8,6 +8,7 @@ Delivers classes useful for handwriting:
 
 Todo:
 
+* unit-test `FXGlyph.getScaledStrokes`
 * sanitize coding and unit testing of `GlyphFeatures`
 * add `id` property to glyph
 * convenience constructor on `Glyph`
