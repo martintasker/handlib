@@ -41,6 +41,14 @@ and `bower update handlib`.
 
 ## releases
 
+### v0.5.0
+
+Compared with v0.4.1,
+
+* introduced `GlyphBuilder.setDevice()` and `FXGlyph.getDevice()` as more direct client APIs to device
+* introduced non-exported class `Stroke` which handles all feature extraction for `FXGlyph`:
+  this looks saner already and will be a night-and-day improvement when it comes to $s$-parameterization
+
 ### v0.4.1
 
 Compared with v0.4.0,
