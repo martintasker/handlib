@@ -1,16 +1,16 @@
 # Feature extraction
 
-The comparison feature of Handy depends on finding a similarity measure between characters or, looked at in an opposite perspective,
-a distance measure.  The method we use here, when comparing two characters, is to find _corresponding points_ on the strokes of each
-character, and to find the Euclidean distance between them $d^2 = \Delta x^2 + \Delta y^2$.  It turns out we have to do quite a lot
-of work to get points which actually correspond, and that between some pairs of characters there is simply no correspondence: they
+To compare glyphs, you need a similarity measure between them or, looked at in an opposite perspective, a distance measure.
+The method we use here, when comparing two glyphs, is to find _corresponding points_ on the strokes of each
+glyph, and to find the Euclidean distance between them $d^2 = \Delta x^2 + \Delta y^2$.  It turns out we have to do quite a lot
+of work to get points which actually correspond, and that between some pairs of glypphs there is simply no correspondence: they
 are just _different_.
 
-* for characters to be comparable at all, they have to have the same structure of strokes and dots; so 'i' and 'j' are comparable, as are 'e' and 'l';
+* for glyphs to be comparable at all, they have to have the same structure of strokes and dots; so 'i' and 'j' are comparable, as are 'e' and 'l';
   but 'i' and 'e' are not
 * to get stroke and dot structure, we need to identify strokes which are so short that they count as dots; and we need to identify strokes with
   sharp bends in them and divide them into substrokes
-* in order to do that reliably, we have to scale the characters from the input (which is usually several hundred pixels wide and high) into a
+* in order to do that reliably, we have to scale the glyphs from the input (which is usually several hundred pixels wide and high) into a
   normalized unit box, 1.0 wide and 1.0 high; and we need to re-sample the strokes from the roughly equal units of _time_ in which they originally
   are given, into equal units of _distance_
 
@@ -27,7 +27,7 @@ analysis of a stroke begins with a re-sampled version of the stroke into even di
 becomes a set of points $(x_s,y_s)$ where $s$ is a distance-based index.  This re-sampling raises two questions immediately:
 
 * what method is used to re-sample?--answer, straightforwardly, linear interpolation between $t$-based samples
-* what distance $\delta s$ is used as the constant interval between samples?--first answer, about 1/20th the character size,
+* what distance $\delta s$ is used as the constant interval between samples?--first answer, about 1/20th the glyph size,
   but we need to justify this, and some additional sophistication may also be needed
 
 Let's call that first answer $\delta s_0$.  $\delta s_0$ must be
@@ -36,19 +36,19 @@ Let's call that first answer $\delta s_0$.  $\delta s_0$ must be
 * not so small that it produces many points--otherwise noise is generated which won't help any downstream computations
 * not so small that it produces many points--otherwise performance will be affected
 
-The value $\delta s_0=0.05$ of the character size seems a reasonable choice given those criteria.
+The value $\delta s_0=0.05$ of the glyph size seems a reasonable choice given those criteria.
 
-But then "the character size" needs to be determined.  It will help, in fact, if we normalize all characters to a unit-box
-before doing $s$-based re-sampling on them: the character as a whole (ie, all its strokes) must be normalized in size,
-to within a square bounding box, which encloses the longer dimension of the character exactly, and which centres the
-character in the other dimension.  But, degenerate or pathological character forms, in particular dots or small strokes
+But then "the glyph size" needs to be determined.  It will help, in fact, if we normalize all glyphs to a unit-box
+before doing $s$-based re-sampling on them: the glyph as a whole (ie, all its strokes) must be normalized in size,
+to within a square bounding box, which encloses the longer dimension of the glyph exactly, and which centres the
+glyph in the other dimension.  But, degenerate or pathological glyph forms, in particular dots or small strokes
 which might be a dot or comma or such, should not be scaled in this bounding-box manner but should be handled specially.
 
-So, prior to any stroke analysis in the unit-box domain, there needs to be whole-character analysis:
+So, prior to any stroke analysis in the unit-box domain, there needs to be whole-glyph analysis:
 
-* the whole character (not just strokes) needs to be scaled into the unit-box domain
-* if the character comprises only a single stroke which is small in comparison to the writepad-box, then instead of scaling to unit
-  dimensions, the character is scaled to sub-unit dimensions--say, 0.1 unit size
+* the whole glyph (not just strokes) needs to be scaled into the unit-box domain
+* if the glyph comprises only a single stroke which is small in comparison to the writepad-box, then instead of scaling to unit
+  dimensions, the glyph is scaled to sub-unit dimensions--say, 0.1 unit size
 
 And, when doing later stroke analysis in the unit-box domain, small strokes need to be handled specially:
 
@@ -78,7 +78,7 @@ further work.
 
 ## Substroke analysis
 
-In the $s$-domain the character should be broken down into substrokes.  A substroke is:
+In the $s$-domain the glyph should be broken down into substrokes.  A substroke is:
 
 * a mark, for short strokes
 * a whole stroke, for strokes which do not include _cusps_ -- ie, sharp changes in direction over a small interval of $\Delta s$
@@ -130,13 +130,13 @@ The v0.7 change should introduce these features (v0.6 will do pre-processing).
 
 ## Point correspondence
 
-To tell whether one character is similar to another, we need to extract some numbers from each character and, where these numbers have the
+To tell whether one glyph is similar to another, we need to extract some numbers from each glyph and, where these numbers have the
 same structure, to compare them.
 
 The numbers may not have the same structure: for example an 'i' comprising a stroke and a mark has an entirely different structure from an 'e'
-comprising a single stroke.  These two characters are simply "different".  But an 'i' and a 'j' may be compared, as may an 'e' and an 'l'.
+comprising a single stroke.  These two glyphs are simply "different".  But an 'i' and a 'j' may be compared, as may an 'e' and an 'l'.
 
-We can represent the _structure_ of a character by its sequence of marks and strokes, eg `sm` for 'i', `s` for 'e', or `sss` for 'F' written in the usual way.
+We can represent the _structure_ of a glyph by its sequence of marks and strokes, eg `sm` for 'i', `s` for 'e', or `sss` for 'F' written in the usual way.
 
 We assign comparable numbers as follows:
 
@@ -164,7 +164,7 @@ $$
 d_{tot}^2 = {1 \over M} \sum_{i=1}^M d_i^2
 $$
 
-The scaling here ensures that distances are broadly of order unity, regardless of the structure of the characters being compared.  This gives a better
+The scaling here ensures that distances are broadly of order unity, regardless of the structure of the glyphs being compared.  This gives a better
 feel for humans comparing distances, and also gives more desirable statistical properties for distance-based algorithms to work with.
 
 This will be the major feature of v0.8.
