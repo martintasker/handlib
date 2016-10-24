@@ -5,13 +5,14 @@ Delivers classes useful for handwriting:
 | `Glyph` | describes a single glyph |
 | `GlyphBuilder` | builds a glyph |
 | `FXGlyph` | feature-extracted `Glyph`, with lazy getters |
+| `BoundingBox` | top/left/bottom/right box |
+| `BoxTransform` | box transformation utility |
 
 Todo:
 
 * ensure that an FXGlyph constructor can cope with either a Glyph or FXGlyph parameter
 * make a dot return zero substrokes
 * ever-better and richer feature extraction
-* better internal structure for feature extraction
 
 ## testing
 
@@ -41,6 +42,15 @@ or, to update, change the version specified in `bower.json` to specify `v1.2.3`,
 and `bower update handlib`.
 
 ## releases
+
+### v0.6.0,
+
+* added `BoundingBox` with suitable constructors
+* added `BoxTransform` with suitable options
+* added `scale` to `Glyph` and required it to be specified for `FXGlyph` at construct time
+* added comprehensive description of feature extraction in `fx.md`
+* added `.jshintrc` and jshint jasmine pragmas to ensure that `jshint` works correctly,
+  and sorted a few resulting issues
 
 ### v0.5.0
 

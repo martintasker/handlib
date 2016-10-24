@@ -4,15 +4,155 @@
 module.exports.Glyph = require('./lib/glyph');
 module.exports.GlyphBuilder = require('./lib/glyph-builder');
 module.exports.FXGlyph = require('./lib/fx-glyph');
+module.exports.BoundingBox = require('./lib/bounding-box');
+module.exports.BoxTransformer = require('./lib/box-transformer');
 
-},{"./lib/fx-glyph":2,"./lib/glyph":4,"./lib/glyph-builder":3}],2:[function(require,module,exports){
+},{"./lib/bounding-box":2,"./lib/box-transformer":3,"./lib/fx-glyph":4,"./lib/glyph":6,"./lib/glyph-builder":5}],2:[function(require,module,exports){
 'use strict';
 
-var Glyph = require('./glyph');
+var BoundingBox = function(a, b, c, d) {
+  this.top = undefined;
+  this.left = undefined;
+  this.bottom = undefined;
+  this.right = undefined;
+  if (typeof a === 'number' && typeof b === 'number' && typeof c === 'number' && typeof d === 'number') {
+    constructFromCoordinates.call(this, a, b, c, d); // x1, y1, x2, y2
+  } else if (typeof a === 'object' && typeof a.top === 'number') {
+    constructFromList.call(this, arguments); // args are series of BoundingBoxes or {top,left,bottom,right} specs
+  } else if (typeof a === 'object' && typeof a.length === 'number' && a.length > 0) {
+    constructFromList.call(this, a); // [ {x,y} | bbox, {x,y} | bbox ...]
+  } else if (a === 'unit') {
+    constructUnitBox.call(this);
+  } else {
+    throw 'unexpected BoundingBox parameters';
+  }
+
+  function constructFromCoordinates(x1, y1, x2, y2) {
+    this.top = Math.min(y1, y2);
+    this.left = Math.min(x1, x2);
+    this.bottom = Math.max(y1, y2);
+    this.right = Math.max(x1, x2);
+  }
+
+  function constructUnitBox() {
+    this.top = 0;
+    this.left = 0;
+    this.bottom = 1;
+    this.right = 1;
+  }
+
+  function constructFromList(items) {
+    var item0 = items[0];
+    if (typeof item0.top === 'number') {
+      checkSpec(item0);
+      this.top = item0.top;
+      this.left = item0.left;
+      this.right = item0.right;
+      this.bottom = item0.bottom
+    } else {
+      this.top = this.bottom = item0.y;
+      this.left = this.right = item0.x;
+    }
+    for (var i = 1; i < items.length; ++i) {
+      var item = items[i];
+      if (typeof item.top === 'number') {
+        checkSpec(item);
+        this.left = Math.min(this.left, item.left);
+        this.right = Math.max(this.right, item.right);
+        this.top = Math.min(this.top, item.top);
+        this.bottom = Math.max(this.bottom, item.bottom);
+      } else {
+        this.left = Math.min(this.left, item.x);
+        this.right = Math.max(this.right, item.x);
+        this.top = Math.min(this.top, item.y);
+        this.bottom = Math.max(this.bottom, item.y);
+      }
+    }
+
+    function checkSpec(spec) {
+      if (spec.top > spec.bottom || spec.left > spec.right) {
+        throw 'invalid box: top > bottom or left > right';
+      }
+    }
+  }
+};
+
+module.exports = BoundingBox;
+
+},{}],3:[function(require,module,exports){
+'use strict';
+
+var BoxTransformer = function(fromBox, toBox, options) {
+  this.fromBox = fromBox;
+  this.toBox = toBox;
+  this.x = x;
+  this.y = y;
+  this.options = {
+    center: true,
+    maintainAspectRatio: true
+  };
+  var self = this;
+  Object.keys(options || {}).forEach(function(option) {
+    self.options[option] = options[option];
+  });
+
+  var xInScale = this.fromBox.right - this.fromBox.left;
+  if (xInScale === 0) {
+    xInScale = 1
+  }
+  var yInScale = this.fromBox.bottom - this.fromBox.top;
+  if (yInScale === 0) {
+    yInScale = 1;
+  }
+  var xInAnchor = this.fromBox.left;
+  var yInAnchor = this.fromBox.top;
+
+  var xOutScale = this.toBox.right - this.toBox.left;
+  var yOutScale = this.toBox.bottom - this.toBox.top;
+  var xOutAnchor = this.toBox.left;
+  var yOutAnchor = this.toBox.top;
+
+  if (this.options.center) {
+    xInAnchor = 0.5 * (this.fromBox.left + this.fromBox.right);
+    yInAnchor = 0.5 * (this.fromBox.top + this.fromBox.bottom);
+    xOutAnchor = 0.5 * (this.toBox.left + this.toBox.right);
+    yOutAnchor = 0.5 * (this.toBox.top + this.toBox.bottom);
+  }
+
+  var xScale = xOutScale / xInScale;
+  var yScale = yOutScale / yInScale;
+  var minScale = Math.min(xScale, yScale);
+  if (this.options.maintainAspectRatio) {
+    xScale = minScale;
+    yScale = minScale;
+  }
+
+  function x(xIn) {
+    return (xIn - xInAnchor) * xScale + xOutAnchor;
+  }
+
+  function y(yIn) {
+    return (yIn - yInAnchor) * yScale + yOutAnchor;
+  }
+};
+
+module.exports = BoxTransformer;
+
+},{}],4:[function(require,module,exports){
+'use strict';
+
+/* jshint jasmine: true */
+
 var Stroke = require('./stroke');
+var BoundingBox = require('./bounding-box');
+var BoxTransformer = require('./box-transformer');
 
 var FXGlyph = function(glyph) {
+  if (!glyph.scale) {
+    throw 'glyph must have scale for successful feature extraction';
+  }
   this._glyph = glyph;
+  this.scale = glyph.scale;
 };
 
 // getters
@@ -37,7 +177,7 @@ FXGlyph.prototype = {
   },
   get unitScaledStrokes() {
     if (!this._unitScaledStrokes) {
-      this._unitScaledStrokes = FXGlyph.getScaledStrokes(this.strokes, this.bbox, 1);
+      this._unitScaledStrokes = FXGlyph.getScaledStrokes(this.strokes, this.bbox, new BoundingBox('unit'));
     }
     return this._unitScaledStrokes;
   },
@@ -64,61 +204,20 @@ FXGlyph.prototype = {
 // more methods
 
 FXGlyph.prototype._getBBox = function(glyph) {
-  var xy0 = glyph.strokes[0][0];
-  var bbox = {
-    top: xy0.y,
-    bottom: xy0.y,
-    left: xy0.x,
-    right: xy0.x,
-  };
-  glyph.strokes.forEach(function(stroke) {
-    stroke.forEach(function(xy) {
-      if (xy.x < bbox.left) {
-        bbox.left = xy.x;
-      } else if (xy.x > bbox.right) {
-        bbox.right = xy.x;
-      }
-      if (xy.y < bbox.top) {
-        bbox.top = xy.y;
-      } else if (xy.y > bbox.bottom) {
-        bbox.bottom = xy.y;
-      }
-    });
+  var bboxes = glyph.strokes.map(function(stroke) {
+    return new BoundingBox(stroke);
   });
-  return bbox;
+  return new BoundingBox(bboxes);
 };
 
-FXGlyph.getScaledStrokes = function(strokes, bbox, scale) {
-  if (typeof scale === 'undefined') {
-    scale = 1;
-  }
-
-  var xScale = 1;
-  if (bbox.right > bbox.left) {
-    xScale = 1 / (bbox.right - bbox.left);
-  }
-  var yScale = 1;
-  if (bbox.bottom > bbox.top) {
-    yScale = 1 / (bbox.bottom - bbox.top);
-  }
-  var xyScale = Math.min(xScale, yScale);
-
-  var xMid = 0.5 * (bbox.left + bbox.right);
-  var yMid = 0.5 * (bbox.top + bbox.bottom);
-
-  function cx(x) {
-    return scale * (0.5 + (x - xMid) * xyScale);
-  }
-
-  function cy(y) {
-    return scale * (0.5 + (y - yMid) * xyScale);
-  }
+FXGlyph.getScaledStrokes = function(strokes, bboxFrom, bboxTo) {
+  var scaler = new BoxTransformer(bboxFrom, bboxTo);
 
   var oStrokes = strokes.map(function(stroke) {
     var points = stroke.map(function(xy) {
       return {
-        x: cx(xy.x),
-        y: cy(xy.y)
+        x: scaler.x(xy.x),
+        y: scaler.y(xy.y)
       };
     });
     return new Stroke(points);
@@ -147,13 +246,13 @@ FXGlyph.prototype._getSubStrokes = function() {
     });
   });
   return allSubStrokes;
-}
+};
 
 // export
 
 module.exports = FXGlyph;
 
-},{"./glyph":4,"./stroke":5}],3:[function(require,module,exports){
+},{"./bounding-box":2,"./box-transformer":3,"./stroke":7}],5:[function(require,module,exports){
 'use strict';
 
 var Glyph = require('./glyph');
@@ -169,7 +268,7 @@ GlyphBuilder.prototype.constructor = GlyphBuilder;
 // implementation -- methods
 GlyphBuilder.prototype.setDevice = function(device) {
   this.device = device;
-}
+};
 
 GlyphBuilder.prototype.addPoint = function(xy) {
   var self = this;
@@ -210,13 +309,14 @@ GlyphBuilder.prototype.getGlyph = function() {
 
 module.exports = GlyphBuilder;
 
-},{"./glyph":4}],4:[function(require,module,exports){
+},{"./glyph":6}],6:[function(require,module,exports){
 'use strict';
 
 var Glyph = function(spec) {
   this.id = (spec && spec.id) || "";
   this.device = (spec && spec.device) || "";
   this.strokes = (spec && spec.strokes && normalizeStrokes(spec.strokes)) || [];
+  this.scale = spec && spec.scale;
 };
 
 function normalizeStrokes(strokesSpec) {
@@ -243,7 +343,7 @@ function normalizeStrokes(strokesSpec) {
 
 module.exports = Glyph;
 
-},{}],5:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
 var Stroke = function(points) {
@@ -292,7 +392,8 @@ Stroke.prototype._getSubStrokes = function() {
   }
 
   var increments = [];
-  for (var i = 1; i < this.points.length; i++) {
+  var i;
+  for (i = 1; i < this.points.length; i++) {
     var dx = this.points[i].x - this.points[i - 1].x;
     var dy = this.points[i].y - this.points[i - 1].y;
     increments.push({
@@ -302,7 +403,7 @@ Stroke.prototype._getSubStrokes = function() {
   }
 
   var breakPoints = [];
-  for (var i = 1; i < increments.length; i++) {
+  for (i = 1; i < increments.length; i++) {
     var i1 = increments[i - 1];
     var i2 = increments[i];
     var modi1 = Math.sqrt(i1.dx * i1.dx + i1.dy * i1.dy);
@@ -317,10 +418,10 @@ Stroke.prototype._getSubStrokes = function() {
 
   var subStrokes = [];
 
-  function addSubStroke(startIndex, endIndex) {
+  function addSubStroke(strokePoints, startIndex, endIndex) {
     var points = [];
     for (var i = startIndex; i <= endIndex; i++) {
-      points.push(this.points[i]);
+      points.push(strokePoints[i]);
     }
     subStrokes.push(new Stroke(points));
   }
@@ -329,13 +430,13 @@ Stroke.prototype._getSubStrokes = function() {
   var breakPointIndex = 0;
   while (breakPointIndex < breakPoints.length) {
     var endIndex = breakPoints[breakPointIndex];
-    addSubStroke.call(this, startIndex, endIndex);
+    addSubStroke(this.points, startIndex, endIndex);
     startIndex = endIndex;
     breakPointIndex++;
   }
 
   return subStrokes;
-}
+};
 
 // export
 
