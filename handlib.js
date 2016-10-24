@@ -202,6 +202,12 @@ FXGlyph.prototype = {
     }
     return this._subStrokes;
   },
+  get signature() {
+    if (!this._signature) {
+      this._signature = this._getSignature();
+    }
+    return this._signature;
+  },
 };
 
 // more methods
@@ -250,6 +256,13 @@ FXGlyph.prototype._getSubStrokes = function() {
     });
   });
   return allSubStrokes;
+};
+
+FXGlyph.prototype._getSignature = function() {
+  return this.subStrokes.map(function(subStroke) {
+    return subStroke.type;
+  })
+  .join(':');
 };
 
 // export
@@ -356,6 +369,7 @@ var Stroke = function(points, scale) {
 };
 
 Stroke.DS_UNIT_DEFAULT = 0.05;
+Stroke.PC_DOT_COUNT = 9;
 
 Stroke.getEqualSamples = getEqualSamples;
 
@@ -485,6 +499,7 @@ Stroke.prototype._getSubStrokes = function() {
   breakPoints.push(this.sStroke.length - 1);
 
   var subStrokes = [];
+  var sizes = [];
 
   function addSubStroke(strokePoints, startIndex, endIndex) {
     var points = [];
@@ -492,6 +507,7 @@ Stroke.prototype._getSubStrokes = function() {
       points.push(strokePoints[i]);
     }
     subStrokes.push(new Stroke(points, this.scale));
+    sizes.push(this.ds * (endIndex + 1 - startIndex));
   }
 
   var startIndex = 0;
@@ -503,10 +519,18 @@ Stroke.prototype._getSubStrokes = function() {
     breakPointIndex++;
   }
 
-  return subStrokes.map(function(substroke) {
+  return subStrokes.map(function(subStroke, i) {
+    var start = i === 0;
+    var end = i === subStrokes.length - 1;
+    var type = start && end ? 'stroke' :
+      start && !end ? 'start' :
+      !start && end ? 'end' :
+      'middle';
+    var pcDots = getPCDots(subStroke.points, sizes[i]);
     return {
-      type: 'stroke',
-      stroke: substroke,
+      type: type,
+      stroke: subStroke,
+      pcDots: pcDots,
     };
   });
 };
@@ -553,6 +577,32 @@ function getEqualSamples(xt, st, n) {
     xOut.push(x0 + xRange * (s - sLE) / sRange);
   }
   return xOut;
+}
+
+function getPCDots(sDots, size) {
+  var xIn = sDots.map(function(dot) {
+    return dot.x;
+  });
+  var yIn = sDots.map(function(dot) {
+    return dot.y;
+  });
+  var nIn = sDots.length;
+  var sIn = [];
+  for (var si = 0; si < nIn; si++) {
+    sIn.push(size * si / (nIn - 1));
+  }
+
+  var xOut = getEqualSamples(xIn, sIn, Stroke.PC_DOT_COUNT);
+  var yOut = getEqualSamples(yIn, sIn, Stroke.PC_DOT_COUNT);
+
+  var pcDots = [];
+  for (var i = 0; i < Stroke.PC_DOT_COUNT; i++) {
+    pcDots.push({
+      x: xOut[i],
+      y: yOut[i]
+    });
+  }
+  return pcDots;
 }
 
 // export

@@ -11,6 +11,7 @@ Delivers classes useful for handwriting:
 Todo:
 
 * improve the detection of cusps in knotty situations
+* properly unit-test pcDots extraction, and stroke type
 * ensure that an FXGlyph constructor can cope with either a Glyph or FXGlyph parameter
 * make a dot return zero substrokes
 * ever-better and richer feature extraction
@@ -43,6 +44,11 @@ or, to update, change the version specified in `bower.json` to specify `v1.2.3`,
 and `bower update handlib`.
 
 ## releases
+
+### v0.7.1,
+
+* added `signature` to `FXGlyph`
+* added `pcDots` to sub-strokes
 
 ### v0.7.0,
 
