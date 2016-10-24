@@ -8,6 +8,7 @@ Delivers classes useful for handwriting:
 
 Todo:
 
+* ensure that an FXGlyph constructor can cope with either a Glyph or FXGlyph parameter
 * make a dot return zero substrokes
 * ever-better and richer feature extraction
 * better internal structure for feature extraction
