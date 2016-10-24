@@ -10,6 +10,7 @@ Delivers classes useful for handwriting:
 
 Todo:
 
+* improve the detection of cusps in knotty situations
 * ensure that an FXGlyph constructor can cope with either a Glyph or FXGlyph parameter
 * make a dot return zero substrokes
 * ever-better and richer feature extraction
@@ -42,6 +43,13 @@ or, to update, change the version specified in `bower.json` to specify `v1.2.3`,
 and `bower update handlib`.
 
 ## releases
+
+### v0.7.0,
+
+* added scale to strokes (as well as to glyphs)
+* added `ds` and `sStroke` to `Stroke` properties as key intermediates for feature extraction
+* extract substrokes using s-space instead of t-space
+* extract substrokes are a `{type, stroke}` object in which `type` can be `mark` or `stroke`
 
 ### v0.6.0,
 
