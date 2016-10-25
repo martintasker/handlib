@@ -167,4 +167,8 @@ $$
 The scaling here ensures that distances are broadly of order unity, regardless of the structure of the glyphs being compared.  This gives a better
 feel for humans comparing distances, and also gives more desirable statistical properties for distance-based algorithms to work with.
 
+Instead of post-dividing a $\sum^N d_p^2$ by $N$, we can pre-divide each $x$ and $y$ that goes into the sum by $\sqrt{N}$; in fact for mark strokes
+we pre-divide by $\sqrt{M}$ and for others we pre-divide by $\sqrt{MN}$.  This means we can extract scaled feature vectors and do the distance calculation
+without any division at that time.
+
 This will be the major feature of v0.8.
