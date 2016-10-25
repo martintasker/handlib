@@ -13,8 +13,6 @@ Todo:
 * improve the detection of cusps in knotty situations
 * properly unit-test pcDots extraction, and stroke type
 * ensure that an FXGlyph constructor can cope with either a Glyph or FXGlyph parameter
-* make a dot return zero substrokes
-* ever-better and richer feature extraction
 
 ## testing
 
@@ -44,6 +42,13 @@ or, to update, change the version specified in `bower.json` to specify `v1.2.3`,
 and `bower update handlib`.
 
 ## releases
+
+### v0.8.0,
+
+* added `pcDots` to `mark` sub-strokes
+* extracted `featureVector` from `FXGlyph`
+* added `FXGlyph.distanceFrom(that)` which calculates distance between two `FXGlyph` objects,
+  provided they are signature-compatible
 
 ### v0.7.1,
 

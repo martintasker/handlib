@@ -208,6 +208,12 @@ FXGlyph.prototype = {
     }
     return this._signature;
   },
+  get featureVector() {
+    if (!this._featureVector) {
+      this._featureVector = this._getFeatureVector();
+    }
+    return this._featureVector;
+  }
 };
 
 // more methods
@@ -260,9 +266,44 @@ FXGlyph.prototype._getSubStrokes = function() {
 
 FXGlyph.prototype._getSignature = function() {
   return this.subStrokes.map(function(subStroke) {
-    return subStroke.type;
-  })
-  .join(':');
+      return subStroke.type;
+    })
+    .join(':');
+};
+
+FXGlyph.prototype._getFeatureVector = function() {
+  var fv = [];
+  var ssnf = 1 / Math.sqrt(Stroke.PC_DOT_COUNT);
+  var snf = 1 / Math.sqrt(this.subStrokes.length);
+  this.subStrokes.forEach(function(subStroke) {
+    if (subStroke.type === 'mark') {
+      var pcDot = subStroke.pcDots[0];
+      fv.push(pcDot.x * snf);
+      fv.push(pcDot.y * snf);
+    } else {
+      subStroke.pcDots.forEach(function(pcDot) {
+        fv.push(pcDot.x * snf * ssnf);
+        fv.push(pcDot.y * snf * ssnf);
+      });
+    }
+  });
+  return fv;
+};
+
+FXGlyph.prototype.distanceFrom = function(that) {
+  return FXGlyph.euclideanDistance(this.featureVector, that.featureVector);
+};
+
+FXGlyph.euclideanDistance = function(fv1, fv2) {
+  if (fv1.length !== fv2.length) {
+    throw 'feature vectors must be same length';
+  }
+  var d2 = 0;
+  for (var i = 0; i < fv1.length; ++i) {
+    var d = fv1[i] - fv2[i];
+    d2 += d * d;
+  }
+  return Math.sqrt(d2);
 };
 
 // export
@@ -471,7 +512,8 @@ Stroke.prototype._getSubStrokes = function() {
   if (this.sStroke.length <= 2) {
     return [{
       type: 'mark',
-      stroke: new Stroke([this.points[0]], this.scale)
+      stroke: new Stroke([this.points[0]], this.scale),
+      pcDots: [this.points[0]],
     }];
   }
 
