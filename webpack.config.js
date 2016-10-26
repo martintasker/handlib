@@ -5,6 +5,7 @@ module.exports = {
   output: {
     path: 'dist',
     filename: 'handlib.js',
+    library: 'handlib',
     libraryTarget: 'umd',
   },
   module: {
