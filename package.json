@@ -4,8 +4,8 @@
   "description": "handwriting utilities for glyphs, feature extraction, comparison and recognition",
   "main": "index.js",
   "scripts": {
-    "test": "jasmine-node lib",
-    "build": "browserify index.js --standalone handlib -o handlib.js"
+    "test": "jasmine-node src",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -19,5 +19,8 @@
     "recognition"
   ],
   "author": "Martin Tasker",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "webpack": "^1.13.2"
+  }
 }

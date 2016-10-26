@@ -2,7 +2,7 @@
 
 /* jshint jasmine: true */
 
-var handlib = require('../index');
+var handlib = require('./index');
 
 describe('BoxTransformer', function() {
 

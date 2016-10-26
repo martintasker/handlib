@@ -23,7 +23,9 @@
   "ignore": [
     "index.js",
     "package.json",
-    "lib/*",
+    "src/*",
+    "webpack.config.js",
+    "test.js",
     "**/.*",
     "node_modules",
     "bower_components",

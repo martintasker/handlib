@@ -2,7 +2,7 @@
 
 /* jshint jasmine: true */
 
-var handlib = require('../index');
+var handlib = require('./index');
 var GLYPH_TEST_DATA = require('./glyph.mock.js');
 
 describe('GlyphBuilder API', function() {
