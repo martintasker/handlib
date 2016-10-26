@@ -1,7 +1,7 @@
 {
   "name": "handlib",
   "description": "handwriting utilities for glyphs, feature extraction, comparison and recognition",
-  "main": "handlib.js",
+  "main": "dist/handlib.js",
   "moduleType": "node",
   "authors": [
     "Martin Tasker"
