@@ -1,10 +1,13 @@
 var webpack = require('webpack');
 
 module.exports = {
-  entry: './src/index',
+  entry: {
+    "handlib": "./src/index.js",
+    "handlib.min": "./src/index.js",
+  },
   output: {
     path: 'dist',
-    filename: 'handlib.js',
+    filename: '[name].js',
     library: 'handlib',
     libraryTarget: 'umd',
   },
@@ -14,14 +17,16 @@ module.exports = {
       loader: 'json'
     }]
   },
-  // plugins: [
-  //   new webpack.optimize.UglifyJsPlugin({
-  //     compress: {
-  //       warnings: false,
-  //     },
-  //     output: {
-  //       comments: false,
-  //     },
-  //   }),
-  // ]
+  devtool: "source-map",
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin({
+      include: /\.min\.js$/,
+      compress: {
+        warnings: false,
+      },
+      output: {
+        comments: false,
+      },
+    }),
+  ]
 };

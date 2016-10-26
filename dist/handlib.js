@@ -11,41 +11,41 @@
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-
+/******/
 /******/ 		// Check if module is in cache
 /******/ 		if(installedModules[moduleId])
 /******/ 			return installedModules[moduleId].exports;
-
+/******/
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			exports: {},
 /******/ 			id: moduleId,
 /******/ 			loaded: false
 /******/ 		};
-
+/******/
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
+/******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.loaded = true;
-
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-
-
+/******/
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-
+/******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-
+/******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(0);
 /******/ })
@@ -55,7 +55,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-
+	
 	module.exports.Glyph = __webpack_require__(1);
 	module.exports.GlyphBuilder = __webpack_require__(2);
 	module.exports.FXGlyph = __webpack_require__(3);
@@ -68,14 +68,14 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
 	'use strict';
-
+	
 	var Glyph = function(spec) {
 	  this.id = (spec && spec.id) || "";
 	  this.device = (spec && spec.device) || "";
 	  this.strokes = (spec && spec.strokes && normalizeStrokes(spec.strokes)) || [];
 	  this.scale = spec && spec.scale;
 	};
-
+	
 	function normalizeStrokes(strokesSpec) {
 	  return strokesSpec.map(function(strokeSpec) {
 	    if (typeof strokeSpec !== 'object') {
@@ -97,7 +97,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  });
 	}
-
+	
 	module.exports = Glyph;
 
 
@@ -106,29 +106,29 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-
+	
 	var Glyph = __webpack_require__(1);
-
+	
 	var GlyphBuilder = function() {
 	  Glyph.call(this);
 	  this.strokeInProgress = false;
 	};
-
+	
 	GlyphBuilder.prototype = Object.create(Glyph.prototype);
 	GlyphBuilder.prototype.constructor = GlyphBuilder;
-
+	
 	// implementation -- methods
 	GlyphBuilder.prototype.setDevice = function(device) {
 	  this.device = device;
 	};
-
+	
 	GlyphBuilder.prototype.addPoint = function(xy) {
 	  var self = this;
 	  if (!self.strokeInProgress) {
 	    self.strokes.push([]);
 	    self.strokeInProgress = true;
 	  }
-
+	
 	  var stroke = self.strokes[self.strokes.length - 1];
 	  if (stroke.length > 0) {
 	    var lastPoint = stroke[stroke.length - 1];
@@ -136,10 +136,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return;
 	    }
 	  }
-
+	
 	  stroke.push(xy);
 	};
-
+	
 	GlyphBuilder.prototype.endStroke = function() {
 	  var self = this;
 	  if (!self.strokeInProgress) {
@@ -151,14 +151,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	  self.strokeInProgress = false;
 	};
-
+	
 	GlyphBuilder.prototype.getGlyph = function() {
 	  return new Glyph({
 	    strokes: this.strokes,
 	    device: this.device,
 	  });
 	};
-
+	
 	module.exports = GlyphBuilder;
 
 
@@ -167,13 +167,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-
+	
 	/* jshint jasmine: true */
-
+	
 	var Stroke = __webpack_require__(4);
 	var BoundingBox = __webpack_require__(5);
 	var BoxTransformer = __webpack_require__(6);
-
+	
 	var FXGlyph = function(glyph) {
 	  if (!glyph.scale) {
 	    throw 'glyph must have scale for successful feature extraction';
@@ -181,7 +181,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  this._glyph = glyph;
 	  this._scale = glyph.scale;
 	};
-
+	
 	// getters
 	FXGlyph.prototype = {
 	  get glyph() {
@@ -242,20 +242,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return this._featureVector;
 	  }
 	};
-
+	
 	// more methods
-
+	
 	FXGlyph.prototype._getBBox = function(glyph) {
 	  var bboxes = glyph.strokes.map(function(stroke) {
 	    return new BoundingBox(stroke);
 	  });
 	  return new BoundingBox(bboxes);
 	};
-
+	
 	FXGlyph.getScaledStrokes = function(strokes, bboxFrom, bboxTo) {
 	  var scaler = new BoxTransformer(bboxFrom, bboxTo);
 	  var scale = Math.min(bboxTo.right - bboxTo.left, bboxTo.bottom - bboxTo.top);
-
+	
 	  var oStrokes = strokes.map(function(stroke) {
 	    var points = stroke.map(function(xy) {
 	      return {
@@ -267,19 +267,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  });
 	  return oStrokes;
 	};
-
+	
 	FXGlyph.prototype._getSizes = function() {
 	  return this.unitScaledStrokes.map(function(stroke) {
 	    return stroke.size;
 	  });
 	};
-
+	
 	FXGlyph.prototype._getSize = function() {
 	  return this.sizes.reduce(function(tot, size) {
 	    return tot + size;
 	  }, 0);
 	};
-
+	
 	FXGlyph.prototype._getSubStrokes = function() {
 	  var allSubStrokes = [];
 	  this.unitScaledStrokes.forEach(function(stroke) {
@@ -290,14 +290,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  });
 	  return allSubStrokes;
 	};
-
+	
 	FXGlyph.prototype._getSignature = function() {
 	  return this.subStrokes.map(function(subStroke) {
 	      return subStroke.type;
 	    })
 	    .join(':');
 	};
-
+	
 	FXGlyph.prototype._getFeatureVector = function() {
 	  var fv = [];
 	  var ssnf = 1 / Math.sqrt(Stroke.PC_DOT_COUNT);
@@ -316,11 +316,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  });
 	  return fv;
 	};
-
+	
 	FXGlyph.prototype.distanceFrom = function(that) {
 	  return FXGlyph.euclideanDistance(this.featureVector, that.featureVector);
 	};
-
+	
 	FXGlyph.euclideanDistance = function(fv1, fv2) {
 	  if (fv1.length !== fv2.length) {
 	    throw 'feature vectors must be same length';
@@ -332,9 +332,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	  return Math.sqrt(d2);
 	};
-
+	
 	// export
-
+	
 	module.exports = FXGlyph;
 
 
@@ -343,17 +343,17 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
 	'use strict';
-
+	
 	var Stroke = function(points, scale) {
 	  this._points = points;
 	  this._scale = scale;
 	};
-
+	
 	Stroke.DS_UNIT_DEFAULT = 0.05;
 	Stroke.PC_DOT_COUNT = 9;
-
+	
 	Stroke.getEqualSamples = getEqualSamples;
-
+	
 	// getters
 	Stroke.prototype = {
 	  get points() {
@@ -393,11 +393,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return this._subStrokes;
 	  },
 	};
-
+	
 	Stroke.prototype._calculateSize = function() {
 	  return this.sList[this.points.length - 1];
 	};
-
+	
 	Stroke.prototype._getDS = function() {
 	  var ds0 = this.scale * Stroke.DS_UNIT_DEFAULT;
 	  var nIncrements = Math.floor(this.size / ds0);
@@ -407,7 +407,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	  return ds;
 	};
-
+	
 	Stroke.prototype._getSList = function() {
 	  var sList = [0];
 	  var s = 0;
@@ -426,7 +426,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	  return sList;
 	};
-
+	
 	Stroke.prototype._getSStroke = function() {
 	  var sList = this.sList;
 	  var xList = this.points.map(function(point) {
@@ -447,7 +447,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	  return stroke;
 	};
-
+	
 	Stroke.prototype._getSubStrokes = function() {
 	  if (this.sStroke.length <= 2) {
 	    return [{
@@ -456,7 +456,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      pcDots: [this.points[0]],
 	    }];
 	  }
-
+	
 	  var increments = [];
 	  var i;
 	  for (i = 1; i < this.sStroke.length; i++) {
@@ -467,7 +467,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      dy: dy
 	    });
 	  }
-
+	
 	  var breakPoints = [];
 	  for (i = 1; i < increments.length; i++) {
 	    var i1 = increments[i - 1];
@@ -479,10 +479,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }
 	  breakPoints.push(this.sStroke.length - 1);
-
+	
 	  var subStrokes = [];
 	  var sizes = [];
-
+	
 	  function addSubStroke(strokePoints, startIndex, endIndex) {
 	    var points = [];
 	    for (var i = startIndex; i <= endIndex; i++) {
@@ -491,7 +491,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    subStrokes.push(new Stroke(points, this.scale));
 	    sizes.push(this.ds * (endIndex + 1 - startIndex));
 	  }
-
+	
 	  var startIndex = 0;
 	  var breakPointIndex = 0;
 	  while (breakPointIndex < breakPoints.length) {
@@ -500,7 +500,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    startIndex = endIndex;
 	    breakPointIndex++;
 	  }
-
+	
 	  return subStrokes.map(function(subStroke, i) {
 	    var start = i === 0;
 	    var end = i === subStrokes.length - 1;
@@ -516,7 +516,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  });
 	};
-
+	
 	function getEqualSamples(xt, st, n) {
 	  if (st.length != xt.length) {
 	    throw 'st.length must equal xt.length';
@@ -560,7 +560,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	  return xOut;
 	}
-
+	
 	function getPCDots(sDots, size) {
 	  var xIn = sDots.map(function(dot) {
 	    return dot.x;
@@ -573,10 +573,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  for (var si = 0; si < nIn; si++) {
 	    sIn.push(size * si / (nIn - 1));
 	  }
-
+	
 	  var xOut = getEqualSamples(xIn, sIn, Stroke.PC_DOT_COUNT);
 	  var yOut = getEqualSamples(yIn, sIn, Stroke.PC_DOT_COUNT);
-
+	
 	  var pcDots = [];
 	  for (var i = 0; i < Stroke.PC_DOT_COUNT; i++) {
 	    pcDots.push({
@@ -586,9 +586,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	  return pcDots;
 	}
-
+	
 	// export
-
+	
 	module.exports = Stroke;
 
 
@@ -597,7 +597,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
 	'use strict';
-
+	
 	var BoundingBox = function(a, b, c, d) {
 	  this.top = undefined;
 	  this.left = undefined;
@@ -614,21 +614,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	  } else {
 	    throw 'unexpected BoundingBox parameters';
 	  }
-
+	
 	  function constructFromCoordinates(x1, y1, x2, y2) {
 	    this.top = Math.min(y1, y2);
 	    this.left = Math.min(x1, x2);
 	    this.bottom = Math.max(y1, y2);
 	    this.right = Math.max(x1, x2);
 	  }
-
+	
 	  function constructUnitBox() {
 	    this.top = 0;
 	    this.left = 0;
 	    this.bottom = 1;
 	    this.right = 1;
 	  }
-
+	
 	  function constructFromList(items) {
 	    var item0 = items[0];
 	    if (typeof item0.top === 'number') {
@@ -656,7 +656,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.bottom = Math.max(this.bottom, item.y);
 	      }
 	    }
-
+	
 	    function checkSpec(spec) {
 	      if (spec.top > spec.bottom || spec.left > spec.right) {
 	        throw 'invalid box: top > bottom or left > right';
@@ -664,7 +664,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }
 	};
-
+	
 	module.exports = BoundingBox;
 
 
@@ -673,7 +673,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
 	'use strict';
-
+	
 	var BoxTransformer = function(fromBox, toBox, options) {
 	  this.fromBox = fromBox;
 	  this.toBox = toBox;
@@ -687,7 +687,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Object.keys(options || {}).forEach(function(option) {
 	    self.options[option] = options[option];
 	  });
-
+	
 	  var xInScale = this.fromBox.right - this.fromBox.left;
 	  if (xInScale === 0) {
 	    xInScale = 1
@@ -698,19 +698,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	  var xInAnchor = this.fromBox.left;
 	  var yInAnchor = this.fromBox.top;
-
+	
 	  var xOutScale = this.toBox.right - this.toBox.left;
 	  var yOutScale = this.toBox.bottom - this.toBox.top;
 	  var xOutAnchor = this.toBox.left;
 	  var yOutAnchor = this.toBox.top;
-
+	
 	  if (this.options.center) {
 	    xInAnchor = 0.5 * (this.fromBox.left + this.fromBox.right);
 	    yInAnchor = 0.5 * (this.fromBox.top + this.fromBox.bottom);
 	    xOutAnchor = 0.5 * (this.toBox.left + this.toBox.right);
 	    yOutAnchor = 0.5 * (this.toBox.top + this.toBox.bottom);
 	  }
-
+	
 	  var xScale = xOutScale / xInScale;
 	  var yScale = yOutScale / yInScale;
 	  var minScale = Math.min(xScale, yScale);
@@ -718,16 +718,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    xScale = minScale;
 	    yScale = minScale;
 	  }
-
+	
 	  function x(xIn) {
 	    return (xIn - xInAnchor) * xScale + xOutAnchor;
 	  }
-
+	
 	  function y(yIn) {
 	    return (yIn - yInAnchor) * yScale + yOutAnchor;
 	  }
 	};
-
+	
 	module.exports = BoxTransformer;
 
 
@@ -735,3 +735,4 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ ])
 });
 ;
+//# sourceMappingURL=handlib.js.map
