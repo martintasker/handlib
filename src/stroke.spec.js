@@ -94,7 +94,6 @@ describe('FXGlyph i', function() {
   var glyph;
   var fxglyph;
   var that;
-  var dot;
 
   beforeEach(function() {
     glyph = new handlib.Glyph({

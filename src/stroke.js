@@ -140,6 +140,7 @@ Stroke.prototype._getSubStrokes = function() {
   var sizes = [];
 
   function addSubStroke(strokePoints, startIndex, endIndex) {
+    /* jshint validthis: true */
     var points = [];
     for (var i = startIndex; i <= endIndex; i++) {
       points.push(strokePoints[i]);
@@ -174,7 +175,7 @@ Stroke.prototype._getSubStrokes = function() {
 };
 
 function getEqualSamples(xt, st, n) {
-  if (st.length != xt.length) {
+  if (st.length !== xt.length) {
     throw 'st.length must equal xt.length';
   }
   if (st[0] !== 0) {
@@ -190,7 +191,6 @@ function getEqualSamples(xt, st, n) {
   }
   var tmax = xt.length;
   var smax = st[tmax - 1];
-  var sIncrement = smax / (tmax - 1);
   var isInLess = 0;
   var isInMore = 0;
   var xOut = [];

@@ -18,6 +18,7 @@ var BoundingBox = function(a, b, c, d) {
   }
 
   function constructFromCoordinates(x1, y1, x2, y2) {
+    /* jshint validthis: true */
     this.top = Math.min(y1, y2);
     this.left = Math.min(x1, x2);
     this.bottom = Math.max(y1, y2);
@@ -25,6 +26,7 @@ var BoundingBox = function(a, b, c, d) {
   }
 
   function constructUnitBox() {
+    /* jshint validthis: true */
     this.top = 0;
     this.left = 0;
     this.bottom = 1;
@@ -32,13 +34,14 @@ var BoundingBox = function(a, b, c, d) {
   }
 
   function constructFromList(items) {
+    /* jshint validthis: true */
     var item0 = items[0];
     if (typeof item0.top === 'number') {
       checkSpec(item0);
       this.top = item0.top;
       this.left = item0.left;
       this.right = item0.right;
-      this.bottom = item0.bottom
+      this.bottom = item0.bottom;
     } else {
       this.top = this.bottom = item0.y;
       this.left = this.right = item0.x;

@@ -48,7 +48,7 @@ describe('BoundingBox constructors', function() {
       right: 2
     };
     expect(function() {
-      var that = new handlib.BoundingBox(spec)
+      new handlib.BoundingBox(spec);
     }).toThrow();
   });
   it('works from point list', function() {
@@ -79,7 +79,7 @@ describe('BoundingBox constructors', function() {
   it('fails from null point list', function() {
     var points = [];
     expect(function() {
-      var that = new handlib.BoundingBox(points)
+      new handlib.BoundingBox(points);
     }).toThrow();
   });
   it('works from two bounding boxes', function() {

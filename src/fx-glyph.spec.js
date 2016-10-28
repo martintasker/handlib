@@ -202,7 +202,7 @@ describe('FXGlyph i', function() {
     });
     it('fails when given silly arguments', function() {
       expect(function() {
-        var d = handlib.FXGlyph.euclideanDistance([0, 0, 0], [1, 1]);
+        handlib.FXGlyph.euclideanDistance([0, 0, 0], [1, 1]);
       }).toThrow();
     });
   });

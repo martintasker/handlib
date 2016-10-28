@@ -16,7 +16,7 @@ var BoxTransformer = function(fromBox, toBox, options) {
 
   var xInScale = this.fromBox.right - this.fromBox.left;
   if (xInScale === 0) {
-    xInScale = 1
+    xInScale = 1;
   }
   var yInScale = this.fromBox.bottom - this.fromBox.top;
   if (yInScale === 0) {
