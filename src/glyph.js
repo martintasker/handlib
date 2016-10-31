@@ -4,7 +4,7 @@ var uuid = require('node-uuid');
 
 var Glyph = function(spec) {
   this.id = (spec && spec.id) || Glyph.getUUID();
-  this.date = (spec && spec.date) || (this.id && dateFromId(this.id)) || new Date();
+  this.date = (spec && spec.date && new Date(spec.date)) || (this.id && dateFromId(this.id)) || new Date();
   this.storeId = (spec && spec.storeId) || "";
   this.device = (spec && spec.device) || "";
   this.strokes = (spec && spec.strokes && normalizeStrokes(spec.strokes)) || [];
