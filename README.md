@@ -43,6 +43,10 @@ and `bower update handlib`.
 
 ## releases
 
+### v0.9.7
+
+* expose `date` and `storeId` via FXGlyph
+
 ### v0.9.6
 
 * newly-exposed `handlib.Glyph.getUUID()` and `handlib.Glyph.isValidUUID()` functions

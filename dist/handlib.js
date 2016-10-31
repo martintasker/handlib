@@ -4696,6 +4696,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  get device() {
 	    return this._glyph.device;
 	  },
+	  get date() {
+	    return this._glyph.date;
+	  },
+	  get storeId() {
+	    return this._glyph.storeId;
+	  },
 	  get bbox() {
 	    if (!this._bbox) {
 	      this._bbox = this._getBBox(this._glyph);
