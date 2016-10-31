@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 /*
   Algorithm: given objects with a distanceFrom() function,

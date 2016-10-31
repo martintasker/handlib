@@ -43,26 +43,37 @@ and `bower update handlib`.
 
 ## releases
 
-### v0.8.0,
+### v0.9.5
+
+Compared with v0.8.0,
+
+* made Glyph `id` use UUID format unless overridden, introduced `node-uuid` as a dependency to enable that
+* store Glyph `date` explicitly instead of deriving it from ID
+* store Glyph `storeId` explicitly -- relying on client code to set this
+* changed directory structure and packaging to be more mainstream webpack and to include minified versions and map
+* added npm run jshint and corrected all issues so found
+* added `gatherer.spec.js` for future usefulness
+
+### v0.8.0
 
 * added `pcDots` to `mark` sub-strokes
 * extracted `featureVector` from `FXGlyph`
 * added `FXGlyph.distanceFrom(that)` which calculates distance between two `FXGlyph` objects,
   provided they are signature-compatible
 
-### v0.7.1,
+### v0.7.1
 
 * added `signature` to `FXGlyph`
 * added `pcDots` to sub-strokes
 
-### v0.7.0,
+### v0.7.0
 
 * added scale to strokes (as well as to glyphs)
 * added `ds` and `sStroke` to `Stroke` properties as key intermediates for feature extraction
 * extract substrokes using s-space instead of t-space
 * extract substrokes are a `{type, stroke}` object in which `type` can be `mark` or `stroke`
 
-### v0.6.0,
+### v0.6.0
 
 * added `BoundingBox` with suitable constructors
 * added `BoxTransform` with suitable options
