@@ -27,6 +27,8 @@ describe('FXGlyph basic', function() {
       expect(typeof that.glyph).toEqual('object');
       expect(typeof that.id).toEqual('string');
       expect(typeof that.device).toEqual('string');
+      expect(typeof that.date).toEqual('object');
+      expect(typeof that.storeId).toEqual('string');
       expect(typeof that.bbox).toEqual('object');
       expect(typeof that.strokes).toEqual('object');
       expect(typeof that.subStrokes).toEqual('object');
