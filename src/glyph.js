@@ -3,7 +3,7 @@
 var uuid = require('node-uuid');
 
 var Glyph = function(spec) {
-  this.id = (spec && spec.id) || uuid.v4();
+  this.id = (spec && spec.id) || Glyph.getUUID();
   this.date = (spec && spec.date) || (this.id && dateFromId(this.id)) || new Date();
   this.storeId = (spec && spec.storeId) || "";
   this.device = (spec && spec.device) || "";
@@ -13,6 +13,10 @@ var Glyph = function(spec) {
 
 Glyph.isValidUUID = function(uuid) {
   return /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(uuid);
+}
+
+Glyph.getUUID = function() {
+  return uuid.v4();
 }
 
 function normalizeStrokes(strokesSpec) {

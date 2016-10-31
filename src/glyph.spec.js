@@ -4,6 +4,12 @@
 
 var handlib = require('./index');
 
+describe('Glyph static functions', function() {
+  it('returns valid UUIDs', function() {
+    expect(handlib.Glyph.isValidUUID(handlib.Glyph.getUUID())).toEqual(true);
+  });
+});
+
 describe('Glyph API basic', function() {
 
   // test instance
