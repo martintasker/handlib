@@ -1,7 +1,9 @@
 'use strict';
 
+var uuid = require('node-uuid');
+
 var Glyph = function(spec) {
-  this.id = (spec && spec.id) || "";
+  this.id = (spec && spec.id) || uuid.v4();
   this.date = (spec && spec.date) || (this.id && dateFromId(this.id)) || new Date();
   this.storeId = (spec && spec.storeId) || "";
   this.device = (spec && spec.device) || "";

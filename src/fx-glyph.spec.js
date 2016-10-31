@@ -2,6 +2,10 @@
 
 /* jshint jasmine: true */
 
+function isValidUUID(uuid) {
+  return /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(uuid);
+}
+
 var handlib = require('./index');
 var GLYPH_TEST_DATA = require('./glyph.mock.js');
 var Stroke = require('./stroke');
@@ -100,8 +104,10 @@ describe('FXGlyph A', function() {
       expect(that.bbox.bottom).toEqual(100);
       expect(that.bbox.right).toEqual(100);
     });
-    it('has no device or ID', function() {
-      expect(that.id).toEqual("");
+    it('has UUID', function() {
+      expect(isValidUUID(that.id)).toEqual(true);
+    });
+    it('has no device', function() {
       expect(that.device).toEqual("");
     });
     it('has three substrokes', function() {

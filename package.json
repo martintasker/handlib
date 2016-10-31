@@ -23,5 +23,8 @@
   "license": "MIT",
   "devDependencies": {
     "webpack": "^1.13.2"
+  },
+  "dependencies": {
+    "node-uuid": "^1.4.7"
   }
 }
