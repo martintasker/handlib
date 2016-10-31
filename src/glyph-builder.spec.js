@@ -5,10 +5,6 @@
 var handlib = require('./index');
 var GLYPH_TEST_DATA = require('./glyph.mock.js');
 
-function isValidUUID(uuid) {
-  return /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(uuid);
-}
-
 describe('GlyphBuilder API', function() {
 
   // test instance
@@ -31,7 +27,7 @@ describe('GlyphBuilder API', function() {
       expect(that.strokes).toEqual([]);
       expect(that.strokeInProgress).toEqual(false);
       expect(that.device).toEqual("");
-      expect(isValidUUID(that.id)).toEqual(true);
+      expect(handlib.Glyph.isValidUUID(that.id)).toEqual(true);
     });
     it('adds first point correctly', function() {
       that.addPoint(GLYPH_TEST_DATA.star[0][0]);
@@ -53,7 +49,7 @@ describe('GlyphBuilder API', function() {
       that.addPoint(GLYPH_TEST_DATA.star[0][1]);
       that.endStroke();
       var glyph = that.getGlyph();
-      expect(isValidUUID(that.id)).toEqual(true);
+      expect(handlib.Glyph.isValidUUID(that.id)).toEqual(true);
       expect(glyph.device).toEqual("touch");
     });
     it('adds first three strokes correctly', function() {

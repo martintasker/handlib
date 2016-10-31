@@ -11,6 +11,10 @@ var Glyph = function(spec) {
   this.scale = spec && spec.scale;
 };
 
+Glyph.isValidUUID = function(uuid) {
+  return /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(uuid);
+}
+
 function normalizeStrokes(strokesSpec) {
   return strokesSpec.map(function(strokeSpec) {
     if (typeof strokeSpec !== 'object') {

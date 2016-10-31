@@ -4,10 +4,6 @@
 
 var handlib = require('./index');
 
-function isValidUUID(uuid) {
-  return /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(uuid);
-}
-
 describe('Glyph API basic', function() {
 
   // test instance
@@ -28,7 +24,7 @@ describe('Glyph API basic', function() {
       expect(Object.keys(that).length).toEqual(6);
     });
     it('has correct initial values', function() {
-      expect(isValidUUID(that.id)).toEqual(true);
+      expect(handlib.Glyph.isValidUUID(that.id)).toEqual(true);
       expect(that.storeId).toEqual("");
       // todo: check date using Jasmine mocks
       expect(that.device).toEqual("");
