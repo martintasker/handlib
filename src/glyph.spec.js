@@ -16,13 +16,17 @@ describe('Glyph API basic', function() {
   describe('initialization', function() {
     it('has public interface', function() {
       expect(typeof that.id).toEqual('string');
+      expect(typeof that.storeId).toEqual('string');
+      expect(typeof that.date).toEqual('object');
       expect(typeof that.device).toEqual('string');
       expect(typeof that.strokes).toEqual('object');
       expect(typeof that.scale).toEqual('undefined');
-      expect(Object.keys(that).length).toEqual(4);
+      expect(Object.keys(that).length).toEqual(6);
     });
     it('has correct initial values', function() {
       expect(that.id).toEqual("");
+      expect(that.storeId).toEqual("");
+      // todo: check date using Jasmine mocks
       expect(that.device).toEqual("");
       expect(that.strokes).toEqual([]);
     });
@@ -40,6 +44,27 @@ describe('Glyph API extended', function() {
         id: "foo"
       });
       expect(that.id).toEqual("foo");
+    });
+    it('handles specified date correctly', function() {
+      var now = new Date();
+      that = new handlib.Glyph({
+        date: now,
+      });
+      expect(that.date).toEqual(now);
+    });
+    it('handles date from old-style ID correctly', function() {
+      var then = new Date(2004,4,3,9,30,15);
+      var oldStyleId = '0-20040503-093015-00000';
+      that = new handlib.Glyph({
+        id: oldStyleId,
+      });
+      expect(that.date).toEqual(then);
+    });
+    it('handles storeId correctly', function() {
+      that = new handlib.Glyph({
+        storeId: 'bar',
+      });
+      expect(that.storeId).toEqual('bar');
     });
     it('handles device correctly', function() {
       that = new handlib.Glyph({
