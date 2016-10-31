@@ -72,13 +72,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	var uuid = __webpack_require__(2);
 	
 	var Glyph = function(spec) {
-	  this.id = (spec && spec.id) || uuid.v4();
-	  this.date = (spec && spec.date) || (this.id && dateFromId(this.id)) || new Date();
+	  this.id = (spec && spec.id) || Glyph.getUUID();
+	  this.date = (spec && spec.date && new Date(spec.date)) || (this.id && dateFromId(this.id)) || new Date();
 	  this.storeId = (spec && spec.storeId) || "";
 	  this.device = (spec && spec.device) || "";
 	  this.strokes = (spec && spec.strokes && normalizeStrokes(spec.strokes)) || [];
 	  this.scale = spec && spec.scale;
 	};
+	
+	Glyph.isValidUUID = function(uuid) {
+	  return /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(uuid);
+	}
+	
+	Glyph.getUUID = function() {
+	  return uuid.v4();
+	}
 	
 	function normalizeStrokes(strokesSpec) {
 	  return strokesSpec.map(function(strokeSpec) {

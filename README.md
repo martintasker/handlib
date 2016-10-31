@@ -43,6 +43,11 @@ and `bower update handlib`.
 
 ## releases
 
+### v0.9.6
+
+* newly-exposed `handlib.Glyph.getUUID()` and `handlib.Glyph.isValidUUID()` functions
+* ensure Glyph date is always a valid JavaScript Date
+
 ### v0.9.5
 
 Compared with v0.8.0,
