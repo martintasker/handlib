@@ -101,16 +101,22 @@ describe('TestPoint test', function() {
 
 describe('Gatherer basics', function() {
 
-  var that;
-
   var set1;
+  var that;
 
   beforeEach(function() {
     set1 = makeTestPoints([1], [2], [10], [11]);
+    that = new handlib.Gatherer(set1);
   });
 
+  it('constructs with correct API', function() {
+    expect(typeof that.set).toEqual('object');
+    expect(typeof that.list).toEqual('object');
+  });
   it('constructs correctly', function() {
-    that = new handlib.Gatherer(set1);
     expect(that.set).toEqual(set1);
+  });
+  it('returns a list with same length as initial set', function() {
+    expect(that.list.length).toEqual(set1.length);
   });
 });
