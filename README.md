@@ -43,6 +43,10 @@ and `bower update handlib`.
 
 ## releases
 
+### v0.10.0
+
+* implement `Gatherer`, which sorts items with a `distanceFrom()` function into a semi-coherent order
+
 ### v0.9.7
 
 * expose `date` and `storeId` via FXGlyph

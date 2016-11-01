@@ -61,6 +61,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports.FXGlyph = __webpack_require__(27);
 	module.exports.BoundingBox = __webpack_require__(29);
 	module.exports.BoxTransformer = __webpack_require__(30);
+	module.exports.Gatherer = __webpack_require__(31);
 
 
 /***/ },
@@ -82,11 +83,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	Glyph.isValidUUID = function(uuid) {
 	  return /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(uuid);
-	}
+	};
 	
 	Glyph.getUUID = function() {
 	  return uuid.v4();
-	}
+	};
 	
 	function normalizeStrokes(strokesSpec) {
 	  return strokesSpec.map(function(strokeSpec) {
@@ -4668,8 +4669,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 	
-	/* jshint jasmine: true */
-	
 	var Stroke = __webpack_require__(28);
 	var BoundingBox = __webpack_require__(29);
 	var BoxTransformer = __webpack_require__(30);
@@ -5238,6 +5237,134 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	module.exports = BoxTransformer;
+
+
+/***/ },
+/* 31 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	/*
+	  Gives a list of items in an order which is roughly coherent.
+	  Invoke with g = new Gatherer(items), retrieve with g.list.
+	  Each item must have a distanceFrom() function giving its distance
+	  from any other item.
+	
+	  The implementation here is super-quick and not super-effective.
+	  It runs in O(N log N) time, O(N^2) in pathological cases.  More
+	  effective methods use more global processing but tend to be of
+	  O(N^2) complexity or even worse.
+	*/
+	
+	var Gatherer = function(pointSet) {
+	  this.set = pointSet;
+	};
+	
+	Gatherer.prototype = {
+	  get list() {
+	    if (!this._list) {
+	      this._getList();
+	    }
+	    return this._list;
+	  }
+	};
+	
+	// Leaf
+	
+	Gatherer.Leaf = function(point) {
+	  this.point = point;
+	};
+	
+	Gatherer.Leaf.prototype.emit = function(gatherer) {
+	  gatherer._list.push(this.point);
+	};
+	
+	Gatherer.Leaf.prototype.add = function(point) {
+	  return new Gatherer.Node(this.point, point);
+	};
+	
+	// NodeSide
+	
+	Gatherer.NodeSide = function(point) {
+	  this.point = point;
+	  this.tree = null;
+	};
+	
+	Gatherer.NodeSide.prototype.add = function(point) {
+	  if (!this.tree) {
+	    this.tree = new Gatherer.Leaf(point);
+	  } else {
+	    this.tree = this.tree.add(point);
+	  }
+	};
+	
+	Gatherer.NodeSide.prototype.emit = function(gatherer) {
+	  gatherer._list.push(this.point);
+	  if (this.tree) {
+	    this.tree.emit(gatherer, this.point);
+	  }
+	};
+	
+	// Node
+	
+	Gatherer.Node = function(point1, point2) {
+	  this.side1 = new Gatherer.NodeSide(point1);
+	  this.side2 = new Gatherer.NodeSide(point2);
+	};
+	
+	Gatherer.Node.prototype.emit = function(gatherer, point) {
+	  var nearSide = this.side1;
+	  var farSide = this.side2;
+	  if (point) {
+	    var d1 = this.side1.point.distanceFrom(point);
+	    var d2 = this.side2.point.distanceFrom(point);
+	    if (d1 <= d2) {
+	      nearSide = this.side1;
+	      farSide = this.side2;
+	    } else {
+	      nearSide = this.side2;
+	      farSide = this.side1;
+	    }
+	  }
+	  nearSide.emit(gatherer);
+	  farSide.emit(gatherer);
+	};
+	
+	Gatherer.Node.prototype.add = function(point) {
+	  var d1 = this.side1.point.distanceFrom(point);
+	  var d2 = this.side2.point.distanceFrom(point);
+	  if (d1 <= d2) {
+	    this.side1.add(point);
+	  } else {
+	    this.side2.add(point);
+	  }
+	  return this;
+	};
+	
+	// Gatherer
+	
+	Gatherer.prototype._getList = function() {
+	  this._root = null;
+	  this._list = [];
+	  if (this.set.length === 0) {
+	    return;
+	  }
+	  for (var i = 0; i < this.set.length; ++i) {
+	    this._addPoint(this.set[i]);
+	  }
+	  this._root.emit(this);
+	};
+	
+	Gatherer.prototype._addPoint = function(point) {
+	  if (!this._root) {
+	    this._root = new Gatherer.Leaf(point);
+	  } else {
+	    this._root = this._root.add(point);
+	  }
+	};
+	
+	module.exports = Gatherer;
 
 
 /***/ }
