@@ -57,7 +57,7 @@ var handlib = require('./index');
 
 var TestPoint = function(vector) {
   this.vector = vector;
-}
+};
 
 TestPoint.prototype.distanceFrom = function(other) {
   var s2 = 0;
@@ -66,14 +66,14 @@ TestPoint.prototype.distanceFrom = function(other) {
     s2 += d * d;
   }
   return Math.sqrt(s2);
-}
+};
 
-var makeTestPoints = function(points) {
+var makeTestPoints = function( /*points*/ ) {
   var args = Array.prototype.slice.call(arguments);
   return args.map(function(point) {
     return new TestPoint(point);
   });
-}
+};
 
 describe('TestPoint test', function() {
   it('constructs correctly', function() {
@@ -106,7 +106,7 @@ describe('Gatherer basics', function() {
   var set1;
 
   beforeEach(function() {
-    var set1 = makeTestPoints([1], [2], [10], [11]);
+    set1 = makeTestPoints([1], [2], [10], [11]);
   });
 
   it('constructs correctly', function() {
