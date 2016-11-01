@@ -50,3 +50,35 @@
   improvement in the second line above doesn't matter much.  The improvement in the third and fourth lines
   is, however, more significant.
 */
+
+var TestPoint = function(vector) {
+  this.vector = vector;
+}
+
+TestPoint.prototype.distanceFrom = function(other) {
+  var s2 = 0;
+  for (var i = 0; i < this.vector.length; ++i) {
+    var d = this.vector[i] - other.vector[i];
+    s2 += d * d;
+  }
+  return Math.sqrt(s2);
+}
+
+describe('TestPoint test', function() {
+  it('constructs correctly', function() {
+    var that = new TestPoint([0, 1]);
+    expect(that.vector.length).toEqual(2);
+    expect(that.vector[0]).toEqual(0);
+    expect(that.vector[1]).toEqual(1);
+  });
+  it('handles 1D distance correctly', function() {
+    var p1 = new TestPoint([5]);
+    var p2 = new TestPoint([7]);
+    expect(p1.distanceFrom(p2)).toEqual(2);
+  });
+  it('handles 2D distance correctly', function() {
+    var p1 = new TestPoint([5,6]);
+    var p2 = new TestPoint([8,10]);
+    expect(p1.distanceFrom(p2)).toEqual(5);
+  });
+});
