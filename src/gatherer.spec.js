@@ -1,5 +1,9 @@
 'use strict';
 
+/* jshint jasmine: true */
+
+var handlib = require('./index');
+
 /*
   Algorithm: given objects with a distanceFrom() function,
   sort them into a sequence in which consecutive items are,
@@ -64,6 +68,13 @@ TestPoint.prototype.distanceFrom = function(other) {
   return Math.sqrt(s2);
 }
 
+var makeTestPoints = function(points) {
+  var args = Array.prototype.slice.call(arguments);
+  return args.map(function(point) {
+    return new TestPoint(point);
+  });
+}
+
 describe('TestPoint test', function() {
   it('constructs correctly', function() {
     var that = new TestPoint([0, 1]);
@@ -77,8 +88,29 @@ describe('TestPoint test', function() {
     expect(p1.distanceFrom(p2)).toEqual(2);
   });
   it('handles 2D distance correctly', function() {
-    var p1 = new TestPoint([5,6]);
-    var p2 = new TestPoint([8,10]);
+    var p1 = new TestPoint([5, 6]);
+    var p2 = new TestPoint([8, 10]);
     expect(p1.distanceFrom(p2)).toEqual(5);
+  });
+  it('handles 2D distance correctly', function() {
+    var set1 = makeTestPoints([1], [2], [10], [11]);
+    expect(set1.length).toEqual(4);
+    expect(set1[2].vector[0]).toEqual(10);
+  });
+});
+
+describe('Gatherer basics', function() {
+
+  var that;
+
+  var set1;
+
+  beforeEach(function() {
+    var set1 = makeTestPoints([1], [2], [10], [11]);
+  });
+
+  it('constructs correctly', function() {
+    that = new handlib.Gatherer(set1);
+    expect(that.set).toEqual(set1);
   });
 });
