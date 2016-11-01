@@ -27,41 +27,47 @@ Gatherer.Leaf.prototype.add = function(point) {
   return new Gatherer.Node(this.point, point);
 };
 
+// NodeSide
+
+Gatherer.NodeSide = function(point) {
+  this.point = point;
+  this.tree = null;
+};
+
+Gatherer.NodeSide.prototype.add = function(point) {
+  if (!this.tree) {
+    this.tree = new Gatherer.Leaf(point);
+  } else {
+    this.tree = this.tree.add(point);
+  }
+};
+
+Gatherer.NodeSide.prototype.emit = function(gatherer) {
+  gatherer._list.push(this.point);
+  if (this.tree) {
+    this.tree.emit(gatherer);
+  }
+};
+
 // Node
 
 Gatherer.Node = function(point1, point2) {
-  this.point1 = point1;
-  this.point2 = point2;
-  this.tree1 = null;
-  this.tree2 = null;
+  this.side1 = new Gatherer.NodeSide(point1);
+  this.side2 = new Gatherer.NodeSide(point2);
 };
 
 Gatherer.Node.prototype.emit = function(gatherer) {
-  if (this.tree1) {
-    this.tree1.emit(gatherer);
-  }
-  gatherer.list.push(this.point1);
-  gatherer.list.push(this.point2);
-  if (this.tree2) {
-    this.tree2.emit(gatherer);
-  }
+  this.side1.emit(gatherer);
+  this.side2.emit(gatherer);
 };
 
 Gatherer.Node.prototype.add = function(point) {
-  var d1 = this.point1.distanceFrom(point);
-  var d2 = this.point2.distanceFrom(point);
+  var d1 = this.side1.point.distanceFrom(point);
+  var d2 = this.side2.point.distanceFrom(point);
   if (d1 < d2) {
-    if (this.tree1) {
-      this.tree1 = this.tree1.add(point);
-    } else {
-      this.tree1 = new Gatherer.Leaf(point);
-    }
+    this.side1.add(point);
   } else {
-    if (this.tree2) {
-      this.tree2 = this.tree2.add(point);
-    } else {
-      this.tree2 = new Gatherer.Leaf(point);
-    }
+    this.side2.add(point);
   }
   return this;
 };
