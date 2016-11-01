@@ -1,5 +1,17 @@
 'use strict';
 
+/*
+  Gives a list of items in an order which is roughly coherent.
+  Invoke with g = new Gatherer(items), retrieve with g.list.
+  Each item must have a distanceFrom() function giving its distance
+  from any other item.
+
+  The implementation here is super-quick and not super-effective.
+  It runs in O(N log N) time, O(N^2) in pathological cases.  More
+  effective methods use more global processing but tend to be of
+  O(N^2) complexity or even worse.
+*/
+
 var Gatherer = function(pointSet) {
   this.set = pointSet;
 };
@@ -62,7 +74,7 @@ Gatherer.Node.prototype.emit = function(gatherer, point) {
   if (point) {
     var d1 = this.side1.point.distanceFrom(point);
     var d2 = this.side2.point.distanceFrom(point);
-    if (d1 < d2) {
+    if (d1 <= d2) {
       nearSide = this.side1;
       farSide = this.side2;
     } else {
@@ -77,7 +89,7 @@ Gatherer.Node.prototype.emit = function(gatherer, point) {
 Gatherer.Node.prototype.add = function(point) {
   var d1 = this.side1.point.distanceFrom(point);
   var d2 = this.side2.point.distanceFrom(point);
-  if (d1 < d2) {
+  if (d1 <= d2) {
     this.side1.add(point);
   } else {
     this.side2.add(point);
