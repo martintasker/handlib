@@ -1,7 +1,5 @@
 'use strict';
 
-/* jshint jasmine: true */
-
 var Stroke = require('./stroke');
 var BoundingBox = require('./bounding-box');
 var BoxTransformer = require('./box-transformer');
