@@ -140,3 +140,22 @@ describe('Gatherer with two items', function() {
   });
 
 });
+
+describe('Gatherer with three items', function() {
+
+  var set;
+  var that;
+
+  beforeEach(function() {
+    set = makeTestPoints([1], [2], [10]);
+    that = new handlib.Gatherer(set);
+  });
+
+  it('constructs correctly', function() {
+    expect(that.set).toEqual(set);
+  });
+  it('returns a list with same length as initial set', function() {
+    expect(that.list.length).toEqual(set.length);
+  });
+
+});

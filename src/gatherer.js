@@ -38,13 +38,32 @@ Gatherer.Node = function(point1, point2) {
 
 Gatherer.Node.prototype.emit = function(gatherer) {
   if (this.tree1) {
-    tree1.emit(gatherer);
+    this.tree1.emit(gatherer);
   }
   gatherer.list.push(this.point1);
   gatherer.list.push(this.point2);
   if (this.tree2) {
-    tree2.emit(gatherer);
+    this.tree2.emit(gatherer);
   }
+};
+
+Gatherer.Node.prototype.add = function(point) {
+  var d1 = this.point1.distanceFrom(point);
+  var d2 = this.point2.distanceFrom(point);
+  if (d1 < d2) {
+    if (this.tree1) {
+      this.tree1 = this.tree1.add(point);
+    } else {
+      this.tree1 = new Gatherer.Leaf(point);
+    }
+  } else {
+    if (this.tree2) {
+      this.tree2 = this.tree2.add(point);
+    } else {
+      this.tree2 = new Gatherer.Leaf(point);
+    }
+  }
+  return this;
 };
 
 // Gatherer
