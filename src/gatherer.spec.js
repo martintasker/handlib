@@ -121,3 +121,22 @@ describe('Gatherer basics', function() {
   });
 
 });
+
+describe('Gatherer with two items', function() {
+
+  var set2;
+  var that;
+
+  beforeEach(function() {
+    set2 = makeTestPoints([1], [2]);
+    that = new handlib.Gatherer(set2);
+  });
+
+  it('constructs correctly', function() {
+    expect(that.set).toEqual(set2);
+  });
+  it('returns a list with same length as initial set', function() {
+    expect(that.list.length).toEqual(set2.length);
+  });
+
+});
