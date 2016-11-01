@@ -105,7 +105,7 @@ describe('Gatherer basics', function() {
   var that;
 
   beforeEach(function() {
-    set1 = makeTestPoints([1], [2], [10], [11]);
+    set1 = makeTestPoints([1]);
     that = new handlib.Gatherer(set1);
   });
 
@@ -119,4 +119,5 @@ describe('Gatherer basics', function() {
   it('returns a list with same length as initial set', function() {
     expect(that.list.length).toEqual(set1.length);
   });
+
 });
