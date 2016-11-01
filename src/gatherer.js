@@ -45,7 +45,7 @@ Gatherer.NodeSide.prototype.add = function(point) {
 Gatherer.NodeSide.prototype.emit = function(gatherer) {
   gatherer._list.push(this.point);
   if (this.tree) {
-    this.tree.emit(gatherer);
+    this.tree.emit(gatherer, this.point);
   }
 };
 
@@ -56,9 +56,22 @@ Gatherer.Node = function(point1, point2) {
   this.side2 = new Gatherer.NodeSide(point2);
 };
 
-Gatherer.Node.prototype.emit = function(gatherer) {
-  this.side1.emit(gatherer);
-  this.side2.emit(gatherer);
+Gatherer.Node.prototype.emit = function(gatherer, point) {
+  var nearSide = this.side1;
+  var farSide = this.side2;
+  if (point) {
+    var d1 = this.side1.point.distanceFrom(point);
+    var d2 = this.side2.point.distanceFrom(point);
+    if (d1 < d2) {
+      nearSide = this.side1;
+      farSide = this.side2;
+    } else {
+      nearSide = this.side2;
+      farSide = this.side1;
+    }
+  }
+  nearSide.emit(gatherer);
+  farSide.emit(gatherer);
 };
 
 Gatherer.Node.prototype.add = function(point) {
