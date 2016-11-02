@@ -133,7 +133,7 @@ FXGlyph.prototype._getSignature = function() {
         subStroke.type === 'stroke' ? '-' :
         subStroke.type === 'start' ? '[' :
         subStroke.type === 'end' ? ']' :
-        subStroke.type === 'middle' ? '=' :
+        subStroke.type === 'middle' ? '-' :
         '!';
     })
     .join('');
