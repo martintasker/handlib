@@ -65,7 +65,7 @@ describe('FXGlyph basic', function() {
       expect(that.unitScaledStrokes[0].scale).toEqual(1);
     });
     it('calculates signature correctly', function() {
-      expect(that.signature).toEqual('stroke:stroke:stroke');
+      expect(that.signature).toEqual('---');
     });
     it('has the right feature vector length', function() {
       expect(that.featureVector.length).toEqual(Stroke.PC_DOT_COUNT * 2 * 3);
@@ -118,7 +118,7 @@ describe('FXGlyph A', function() {
       expect(that.subStrokes[2].stroke.size).toBeCloseTo(0.5, 3);
     });
     it('calculates signature correctly', function() {
-      expect(that.signature).toEqual('start:end:stroke');
+      expect(that.signature).toEqual('[]-');
     });
     it('has the right feature vector length', function() {
       expect(that.featureVector.length).toEqual(Stroke.PC_DOT_COUNT * 2 * 3);
@@ -167,7 +167,7 @@ describe('FXGlyph i', function() {
       expect(that.unitScaledStrokes[0].points[3].y).toEqual(1);
     });
     it('calculates signature correctly', function() {
-      expect(that.signature).toEqual('stroke:mark');
+      expect(that.signature).toEqual('-.');
     });
     it('has the right feature vector length', function() {
       expect(that.featureVector.length).toEqual(Stroke.PC_DOT_COUNT * 2 + 2);

@@ -129,9 +129,14 @@ FXGlyph.prototype._getSubStrokes = function() {
 
 FXGlyph.prototype._getSignature = function() {
   return this.subStrokes.map(function(subStroke) {
-      return subStroke.type;
+      return subStroke.type === 'mark' ? '.' :
+        subStroke.type === 'stroke' ? '-' :
+        subStroke.type === 'start' ? '[' :
+        subStroke.type === 'end' ? ']' :
+        subStroke.type === 'middle' ? '=' :
+        '!';
     })
-    .join(':');
+    .join('');
 };
 
 FXGlyph.prototype._getFeatureVector = function() {
