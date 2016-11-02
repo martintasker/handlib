@@ -62,6 +62,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports.BoundingBox = __webpack_require__(29);
 	module.exports.BoxTransformer = __webpack_require__(30);
 	module.exports.Gatherer = __webpack_require__(31);
+	module.exports.GlyphGatherer = __webpack_require__(32);
 
 
 /***/ },
@@ -4798,9 +4799,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	FXGlyph.prototype._getSignature = function() {
 	  return this.subStrokes.map(function(subStroke) {
-	      return subStroke.type;
+	      return subStroke.type === 'mark' ? '.' :
+	        subStroke.type === 'stroke' ? '-' :
+	        subStroke.type === 'start' ? '[' :
+	        subStroke.type === 'end' ? ']' :
+	        subStroke.type === 'middle' ? '-' :
+	        '!';
 	    })
-	    .join(':');
+	    .join('');
 	};
 	
 	FXGlyph.prototype._getFeatureVector = function() {
@@ -5365,6 +5371,58 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	module.exports = Gatherer;
+
+
+/***/ },
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var Gatherer = __webpack_require__(31);
+	
+	var GlyphGatherer = function(glyphSet) {
+	  this.set = glyphSet;
+	};
+	
+	GlyphGatherer.prototype = {
+	  get list() {
+	    if (!this._list) {
+	      this._list = this._getList();
+	    }
+	    return this._list;
+	  }
+	};
+	
+	GlyphGatherer.prototype._getList = function() {
+	  var sets = {};
+	  this.set.forEach(function(fxGlyph) {
+	    var sig = fxGlyph.signature;
+	    var set = sets[sig];
+	    if (!set) {
+	      sets[sig] = [];
+	      set = sets[sig];
+	    }
+	    set.push(fxGlyph);
+	  });
+	
+	  var lists = [];
+	  Object.keys(sets).sort().forEach(function(sig) {
+	    var set = sets[sig];
+	    var list = (new Gatherer(set)).list;
+	    lists.push(list);
+	  });
+	
+	  var result = [];
+	  lists.forEach(function(list) {
+	    list.forEach(function(fxGlyph) {
+	      result.push(fxGlyph);
+	    });
+	  });
+	  return result;
+	};
+	
+	module.exports = GlyphGatherer;
 
 
 /***/ }

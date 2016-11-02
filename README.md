@@ -43,6 +43,16 @@ and `bower update handlib`.
 
 ## releases
 
+### v0.11.0
+
+* implement `GlyphGatherer`, which sorts `FxGlyph`s into distinct-signature sets, then
+  uses `Gatherer` to gather each set, then returns the amalgamated list.
+* changed signature so that, for example, `stroke:start:middle:end:mark` would now be `-[-].`:
+  this compactness is useful in displays, and the collision between stroke and middle is no
+  problem in whole-glyph signatures since they are distinguishable positionally
+  (stroke types themselves remain unchanged and fully descriptive)
+* renamed `glyph.mock.js` to `glyph.synthetic-test-data.js` since that's what it is
+
 ### v0.10.0
 
 * implement `Gatherer`, which sorts items with a `distanceFrom()` function into a semi-coherent order
