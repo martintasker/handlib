@@ -3,7 +3,7 @@
 /* jshint jasmine: true */
 
 var handlib = require('./index');
-var GLYPH_TEST_DATA = require('./glyph.mock.js');
+var GLYPH_TEST_DATA = require('./glyph.synthetic-test-data.js');
 var Stroke = require('./stroke');
 
 describe('FXGlyph basic', function() {

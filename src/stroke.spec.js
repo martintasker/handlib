@@ -4,7 +4,7 @@
 
 var handlib = require('./index');
 var Stroke = require('./stroke');
-var GLYPH_TEST_DATA = require('./glyph.mock.js');
+var GLYPH_TEST_DATA = require('./glyph.synthetic-test-data.js');
 
 describe('Stroke basic', function() {
 
