@@ -2,17 +2,15 @@
 
 Delivers classes useful for handwriting:
 
+| class | purpose |
+| --- | --- |
 | `Glyph` | describes a single glyph |
 | `GlyphBuilder` | builds a glyph |
 | `FXGlyph` | feature-extracted `Glyph`, with lazy getters |
 | `BoundingBox` | top/left/bottom/right box |
 | `BoxTransform` | box transformation utility |
-
-Todo:
-
-* improve the detection of cusps in knotty situations
-* properly unit-test pcDots extraction, and stroke type
-* ensure that an FXGlyph constructor can cope with either a Glyph or FXGlyph parameter
+| `Gatherer` | gatherer for arbitrary data, provides a sort order based on light-weight but effective clustering |
+| `GlyphGatherer` | gatherer for `FXGlyph`s |
 
 ## testing
 
@@ -35,17 +33,27 @@ git push origin master
 From a client project,
 
 ```shell
-bower install --save git@192.168.0.136:/opt/git/handlib#v1.2.3
+bower install --save martintasker/handlib#v1.2.3
 ```
 
 or, to update, change the version specified in `bower.json` to specify `v1.2.3`, or `^1.2.3`, or such,
-and `bower update handlib`.
+and `bower install` again.
 
 ## releases
 
+### v1.0.0
+
+No code change since v0.11.0.  This underlies the [Handiwork](http://handiwork.databatix.com) website, which
+works pretty well, so it seems fair to label this release v1.0.0.
+
+The most obvious to-do items are:
+
+* improve cusp detection in `FXGlyph`: this can miss corners sometimes, resulting in no sub-stroke division where really there should be one
+* nice inline doc for each class
+
 ### v0.11.0
 
-* implement `GlyphGatherer`, which sorts `FxGlyph`s into distinct-signature sets, then
+* implement `GlyphGatherer`, which sorts `FXGlyph`s into distinct-signature sets, then
   uses `Gatherer` to gather each set, then returns the amalgamated list.
 * changed signature so that, for example, `stroke:start:middle:end:mark` would now be `-[-].`:
   this compactness is useful in displays, and the collision between stroke and middle is no
@@ -56,6 +64,10 @@ and `bower update handlib`.
 ### v0.10.0
 
 * implement `Gatherer`, which sorts items with a `distanceFrom()` function into a semi-coherent order
+
+This `Gatherer` would ideally belong in a separate library of machine-learning algorithms, as it is in a way a generic clusterer.
+However, the implementation is very tailored to its intended application (which is why I hestitate even to call it a clusterer),
+and `handlib` currently builds on and/or includes no other machine-learning algorithms.  So, until that changes, `Gatherer` has a happy home here.
 
 ### v0.9.7
 
