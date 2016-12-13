@@ -125,13 +125,26 @@ Stroke.prototype._getSubStrokes = function() {
   }
 
   var breakPoints = [];
+  var CUSP_COS = -0.1;
   for (i = 1; i < increments.length; i++) {
     var i1 = increments[i - 1];
     var i2 = increments[i];
     var dot12 = i1.dx * i2.dx + i1.dy * i2.dy;
     var cosTheta = dot12 / (this.ds * this.ds);
-    if (cosTheta < -0.1) {
+    if (cosTheta < CUSP_COS) {
       breakPoints.push(i);
+    } else if (i + 1 < increments.length) {
+      var i3 = increments[i+1];
+      var cross12 = i1.dx * i2.dy - i1.dy * i2.dx;
+      var cross23 = i2.dx * i3.dy - i2.dy * i3.dx;
+      if (cross12 * cross23 > 0) {
+        var dot13 = i1.dx * i3.dx + i1.dy * i3.dy;
+        cosTheta = dot13 / (this.ds * this.ds);
+        if (cosTheta < CUSP_COS) {
+          i += 1;
+          breakPoints.push(i);
+        }
+      }
     }
   }
   breakPoints.push(this.sStroke.length - 1);

@@ -87,6 +87,33 @@ describe('FXGlyph A', function() {
   });
 });
 
+// interesting because one stroke has substrokes but is awkward
+describe('FXGlyph A2', function() {
+
+  // test instance
+  var glyph;
+  var fxglyph;
+  var that;
+
+  beforeEach(function() {
+    glyph = new handlib.Glyph({
+      strokes: GLYPH_TEST_DATA.A2,
+      scale: 100,
+    });
+    fxglyph = new handlib.FXGlyph(glyph);
+    that = fxglyph.unitScaledStrokes[0];
+  });
+
+  describe('extraction', function() {
+    it('has correct initial values', function() {
+      expect(that.points.length).toEqual(glyph.strokes[0].length);
+    });
+    it('has two substrokes', function() {
+      expect(that.subStrokes.length).toEqual(2);
+    });
+  });
+});
+
 // interesting because one stroke is a single dot
 describe('FXGlyph i', function() {
 
