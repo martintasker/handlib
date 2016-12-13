@@ -41,6 +41,11 @@ and `bower install` again.
 
 ## releases
 
+### v1.1.0
+
+* detect cusps also when the turn takes two ds increments (not just one, as previously) -- detects a whole lot
+  more cusps than before
+
 ### v1.0.0
 
 No code change since v0.11.0.  This underlies the [Handiwork](http://handiwork.databatix.com) website, which
